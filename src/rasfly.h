@@ -6,6 +6,8 @@
 #include <vector>
 #include <thread>
 
+#include "config.h"
+
 enum esc_protocol{ESC_PWM, ONESHOT_125, ONESHOT_42};
 
 struct quaternion {
@@ -29,25 +31,19 @@ struct state {
 
 struct hardware {
 	std::vector<int> pins;
-	esc_protocol esc_protocol;
+	esc_protocol protocol;
 	int (*imu)(state);	
 };
 
-template<typename IMU>
 class rasfly {
 public:
-	rasfly(IMU imuPtr) {
-		imu = std::thread(imuPtr, state);
-	}
-	~rasfly() {
-		imu.join();
-	}
+	rasfly(); 
+	~rasfly();
 	int initESC(int pin1, int pin2, int pin3, int pin4);
 private:
 	int setThrottle();
-	int readConfig();
 	hardware gpio_pins;
-	std::shared_ptr<state> state;
+	std::shared_ptr<state> imu_state;
 };
 
 #endif

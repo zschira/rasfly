@@ -8,6 +8,11 @@ if(CMAKE_BUILD_TYPE MATCHES Static)
 else(CMAKE_BUILD_TYPE MATCHES Static)
 	add_library(RASFLY SHARED src/rasfly.cpp)
 endif(CMAKE_BUILD_TYPE MATCHES Static)
+target_link_libraries(RASFLY pigpio pthread)
 
-install(TARGETS RASFLY DESTINATION lib)
-install(FILES src/rasfly.h DESTINATION include)
+set(HEADERS "src/rasfly.h" "src/config.h")
+add_executable(test src/test.cpp)
+target_link_libraries(test RASFLY)
+
+install(TARGETS RASFLY DESTINATION ${CMAKE_SYSROOT}/usr/lib)
+install(FILES ${HEADERS} DESTINATION ${CMAKE_SYSROOT}/usr/include)

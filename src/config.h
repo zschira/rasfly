@@ -17,7 +17,7 @@ public:
 	};
 
 	void readConfig() {
-		std::ifstream config_file("../rasfly.config");
+		std::ifstream config_file("rasfly.config");
 		std::string line; 
 		std::smatch m;
 		auto r = std::regex ("a");
