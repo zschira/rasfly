@@ -10,9 +10,19 @@ else(CMAKE_BUILD_TYPE MATCHES Static)
 endif(CMAKE_BUILD_TYPE MATCHES Static)
 target_link_libraries(RASFLY pigpio pthread)
 
-set(HEADERS "src/rasfly.h" "src/config.h")
-add_executable(test src/test.cpp)
-target_link_libraries(test RASFLY)
+set(HEADERS "src/rasfly.h" "src/rasfly_config.h" "src/rasfly_types.h")
+set(SCRIPTS "scripts/install.sh")
+set(CONFIG "rasfly.config")
 
-install(TARGETS RASFLY DESTINATION ${CMAKE_SYSROOT}/usr/lib)
-install(FILES ${HEADERS} DESTINATION ${CMAKE_SYSROOT}/usr/include)
+set(CMAKE_INSTALL_PREFIX RASFLY)
+
+install(TARGETS RASFLY LIBRARY DESTINATION lib)
+install(FILES ${HEADERS} DESTINATION include)
+install(FILES ${SCRIPTS} DESTINATION scripts)
+install(FILES ${CONFIG} DESTINATION ./)
+install(TARGETS RASFLY LIBRARY DESTINATION ${CMAKE_SYSROOT}/usr/local/lib)
+install(FILES ${HEADERS} DESTINATION ${CMAKE_SYSROOT}/usr/local/include)
+
+set(CPACK_SOURCE_GENERATOR "TGZ")
+
+include(CPack)

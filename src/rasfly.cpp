@@ -5,7 +5,7 @@
 
 rasfly::rasfly() {
 	config conf;
-	conf.readConfig();
+	conf.readConfig(gpio_pins);
 }
 
 rasfly::~rasfly() {
@@ -18,20 +18,15 @@ int rasfly::initESC(int pin1, int pin2, int pin3, int pin4) {
 		std::cout << "GPIO INITIALIZE FAILURE\n" ;
 		return 1;
 	}
+
 	// Setup out put rate 
-	switch(gpio_pins.protocol) {
-		case ESC_PWM:
-			rate = 50; //Hz 	
-			range = 4000;
-			break;
-	}
 	for(int pin : gpio_pins.pins) {
-		if(rate != gpioSetPWMfrequency(pin, rate)) {
+		if(gpio_pins.esc_rate != gpioSetPWMfrequency(pin, gpio_pins.esc_rate)) {
 			std::cout << "GPIO INITIALIZE FAILURE\n";
 			return 1;
 		}
 		// Set range
-		if(range != gpioSetPWMrange(pin, range)) {
+		if(gpio_pins.esc_range != gpioSetPWMrange(pin, gpio_pins.esc_range)) {
 			std::cout << "GPIO INITIALIZE FAILURE\n";
 			return 1;
 		}
