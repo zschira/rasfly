@@ -1,4 +1,7 @@
 #include "rasfly_config.h"
+#include <fstream>
+#include <sstream>
+#include <iostream>
 
 static inline void char_trim(std::string &s, const char delim) {
     	s.erase(std::find_if(s.begin(), s.end(), [&](int ch) {
@@ -46,8 +49,10 @@ void rasfly::config::processSetting(settings setting, std::string value, hardwar
 		case PINS: {
 			std::string pin_str;
 			std::istringstream ss(value);
+			int counter;
 			while(std::getline(ss, pin_str, ',')) {
-				gpio_pins.pins.push_back(std::stoi(pin_str));
+				gpio_pins.pins[counter] = std::stoi(pin_str);
+				++counter;
 			}
 			break;
 		}

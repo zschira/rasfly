@@ -2,12 +2,8 @@
 #define _CONFIG_H_
 
 #include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
 #include <map>
 #include <regex>
-#include <stdlib.h>
 
 #include "rasfly_types.h"
 namespace rasfly { 

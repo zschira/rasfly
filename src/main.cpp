@@ -3,6 +3,7 @@
 #include "rasfly_esc.h"
 
 #include <vector>
+#include <iostream>
 
 int main() {
 	std::cout << "Starting Up\n";

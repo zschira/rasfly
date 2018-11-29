@@ -6,6 +6,7 @@ namespace rasfly {
 	class esc {
 	public:
 		esc(int pin, int rate, int range);
+		esc(){}
 		~esc();
 		int setThrottle(unsigned throttle);
 	private:
