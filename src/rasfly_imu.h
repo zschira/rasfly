@@ -8,7 +8,8 @@ namespace rasfly {
 		PYTHON,
 		SHARED_OBJECT	
 	};
-	int loadIMU(hardware &rasfly, const char *driver_name, driver_types driver);
+	int loadIMU(hardware &raspi, const char *driver_name, driver_types driver);
+	int loadPython(hardware &raspi, const char *driver_name, driver_types driver);
 }
 
 

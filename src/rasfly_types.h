@@ -3,7 +3,6 @@
 
 #define NUM_MOTORS 4
 
-#include <vector>
 namespace rasfly {
 	enum esc_protocol{ESC_PWM, ONESHOT_125, ONESHOT_42};
 
