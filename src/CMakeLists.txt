@@ -1,11 +1,14 @@
-set(SOURCE "rasfly_config.cpp" "rasfly_esc.cpp")
+set(SOURCE "rasfly_config.cpp" "rasfly_esc.cpp" "rasfly_imu.cpp")
+
+find_package(PythonLibs REQUIRED)
 
 if(CMAKE_BUILD_TYPE MATCHES SHARED)
 	add_library(rasfly_lib SHARED ${SOURCE})
 else(CMAKE_BUILD_TYPE MATCHES SHARED)
 	add_library(rasfly_lib STATIC ${SOURCE})
 endif(CMAKE_BUILD_TYPE MATCHES SHARED)
-target_link_libraries(rasfly_lib pigpio pthread)
+target_link_libraries(rasfly_lib pigpio pthread ${PYTHON_LIBRARIES})
+target_include_directories(rasfly_lib PUBLIC ${PYTHON_INCLUDE_DIRS})
 
 
 

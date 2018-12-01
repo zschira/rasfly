@@ -1,4 +1,5 @@
 #include "rasfly_config.h"
+#include "rasfly_imu.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -26,7 +27,7 @@ rasfly::config::config(std::string fname) {
 
 rasfly::config::~config() {}
 
-void rasfly::config::readConfig(hardware &gpio_pins) {
+void rasfly::config::readConfig(hardware &raspi) {
 	std::ifstream config_file(config_name);
 	std::string line; 
 	std::smatch m;
@@ -37,21 +38,25 @@ void rasfly::config::readConfig(hardware &gpio_pins) {
 		for(auto const &setting : setting_map) {
 			std::regex_search(line, m, setting.second);
 			if( !m.empty()) {
-				processSetting(setting.first, m.suffix().str(), gpio_pins);
+				processSetting(setting.first, m.suffix().str(), raspi);
 			}
 		}
 	}	
 }
 
 
-void rasfly::config::processSetting(settings setting, std::string value, hardware &gpio_pins) {
+void rasfly::config::processSetting(settings setting, std::string value, hardware &raspi) {
 	switch(setting) {
 		case PINS: {
 			std::string pin_str;
 			std::istringstream ss(value);
 			int counter;
 			while(std::getline(ss, pin_str, ',')) {
-				gpio_pins.pins[counter] = std::stoi(pin_str);
+				if(counter == NUM_MOTORS) {
+					std::cout << "RASFLY only supports 4 motors\n";
+					break;
+				}
+				raspi.esc_pins[counter] = std::stoi(pin_str);
 				++counter;
 			}
 			break;
@@ -59,17 +64,17 @@ void rasfly::config::processSetting(settings setting, std::string value, hardwar
 		case ESC_PROTOCOL: {
 			rtrim(value);
 			if(value == "pwm") {
-				gpio_pins.protocol = ESC_PWM;
-				gpio_pins.esc_range = 4000;
-				gpio_pins.esc_rate = 50;
+				raspi.protocol = ESC_PWM;
+				raspi.esc_range = 4000;
+				raspi.esc_rate = 50;
 			} else if(value == "oneshot_125") {
-				gpio_pins.protocol = ONESHOT_125;	
-				gpio_pins.esc_rate = 50 * 8;
+				raspi.protocol = ONESHOT_125;	
+				raspi.esc_rate = 50 * 8;
 			} else if(value == "oneshot_42") {
-				gpio_pins.protocol = ONESHOT_42;
+				raspi.protocol = ONESHOT_42;
 			} else {
 				std::cout << "Invalid ESC protocol: Using standard PWM\n";
-				gpio_pins.protocol = ESC_PWM;
+				raspi.protocol = ESC_PWM;
 			}
 			break;
 		}
@@ -80,7 +85,15 @@ void rasfly::config::processSetting(settings setting, std::string value, hardwar
 			std::getline(ss, path, ',');
 			std::getline(ss, driver_type);
 			char_trim(driver_type, '}');
-			std::cout << driver_type;
+			driver_types driver;
+			if(driver_type == "python") {
+				driver = PYTHON;
+			} else if(driver_type == "shared_object") {
+				driver = SHARED_OBJECT;
+			}
+			if(loadIMU(raspi, path.c_str(), driver)) {
+				std::cout << "Failed to load IMU driver\n";
+			}
 		}
 	}
 }

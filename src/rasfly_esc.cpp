@@ -21,7 +21,6 @@ rasfly::esc::esc(int pin, int rate, int range) {
 	// TODO: success handle
 }
 
-rasfly::esc::~esc() {}
 
 int rasfly::esc::setThrottle(unsigned throttle) {
 	unsigned duty, zero_throttle = range / 20;

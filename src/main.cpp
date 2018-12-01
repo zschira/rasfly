@@ -13,10 +13,12 @@ int main() {
 	rasfly::config configuration("/home/alarm/rasfly.config");
 	configuration.readConfig(raspi);
 	// Initialize speed controllers/motors
-	std::vector<rasfly::esc> esc_vec;
-	for(int pin : raspi.pins) {
+	rasfly::esc esc_vec[NUM_MOTORS];
+	int counter = 0;
+	for(int pin : raspi.esc_pins) {
 		// Initialize speed controller and add to vector
-		esc_vec.push_back(rasfly::esc(pin, raspi.esc_rate, raspi.esc_range));	
+		esc_vec[counter] = rasfly::esc(pin, raspi.esc_rate, raspi.esc_range);
+		counter++;	
 	}
 	// Bind imu driver
 

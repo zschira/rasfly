@@ -1,6 +1,8 @@
 #ifndef _TYPES_H_
 #define _TYPES_H_
 
+#define NUM_MOTORS 4
+
 #include <vector>
 namespace rasfly {
 	enum esc_protocol{ESC_PWM, ONESHOT_125, ONESHOT_42};
@@ -25,10 +27,11 @@ namespace rasfly {
 	};
 
 	struct hardware {
-		std::vector<int> pins;
+		int esc_pins[NUM_MOTORS];
+		int num_esc;
 		esc_protocol protocol;
 		int esc_rate, esc_range;
-		int (*imu)(state);	
+		int (*imu)(state);
 	};
 }
 #endif
