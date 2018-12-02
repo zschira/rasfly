@@ -1,17 +1,25 @@
 #include "rasfly_imu.h"
-#include <Python.h>
 #include <iostream>
 
-int rasfly::loadIMU(hardware &raspi, const char *driver_name, driver_types driver){
+
+rasfly::imu::~imu() {
+	if(imu_driver == PYTHON) {
+		Py_DECREF(pFunc);
+		Py_DECREF(pModule);
+	}
+}
+
+int rasfly::imu::loadIMU(hardware &raspi, const char *driver_name, driver_types driver){
 	int success = 0;
+	imu_driver = driver;
 	if(driver == PYTHON) {
-		success = loadPython(raspi, driver_name, driver); 	
+		success = loadPython(raspi, driver_name); 	
 	}
 	return 0;
 }
 
-int rasfly::loadPython(hardware &raspi, const char *driver_name, driver_types driver) {
-	PyObject *pName, *pModule, *pFunc;
+int rasfly::imu::loadPython(hardware &raspi, const char *driver_name) {
+	PyObject *pName;
 	PyObject *pArgs, *pValue;	
 	const char *func_name = "getState";
 
@@ -32,6 +40,14 @@ int rasfly::loadPython(hardware &raspi, const char *driver_name, driver_types dr
 	if(!pFunc || !PyCallable_Check(pFunc)) {
 		std::cout << "Could not load function: " << func_name << "\n";
 		return 1;
+	}
+
+	return 0;
+}
+
+int rasfly::imu::getState(state &rasfly_state) {
+	if(imu_driver == PYTHON) {
+		
 	}
 	return 0;
 }
