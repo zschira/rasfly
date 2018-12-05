@@ -6,6 +6,8 @@
 namespace rasfly {
 	enum esc_protocol{ESC_PWM, ONESHOT_125, ONESHOT_42};
 
+	enum driver_types { PYTHON, SHARED_OBJECT	};
+
 	struct quaternion {
 		double w;
 		double x;
@@ -26,11 +28,13 @@ namespace rasfly {
 	};
 
 	struct hardware {
+		~hardware() { delete[] imu_path;}
 		int esc_pins[NUM_MOTORS];
 		int num_esc;
 		esc_protocol protocol;
 		int esc_rate, esc_range;
-		int (*imu)(state);
+		driver_types imu_driver;
+		char *imu_path;
 	};
 }
 #endif

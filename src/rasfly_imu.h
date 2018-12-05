@@ -5,14 +5,10 @@
 #include <Python.h>
 
 namespace rasfly {
-	enum driver_types {
-		PYTHON,
-		SHARED_OBJECT	
-	};
 	class imu {
 	public:
 		~imu();
-		int loadIMU(hardware &raspi, const char *driver_name, driver_types driver);
+		int loadIMU(hardware &raspi);
 		int getState(state &rasfly_state);
 	private:	
 		int loadPython(hardware &raspi, const char *driver_name);

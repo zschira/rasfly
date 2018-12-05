@@ -83,16 +83,14 @@ void rasfly::config::processSetting(settings setting, std::string value, hardwar
 			std::string path, driver_type;
 			std::istringstream ss(value);
 			std::getline(ss, path, ',');
+			raspi.imu_path = new char[strlen(path.c_str())];
+			strcpy(raspi.imu_path, path.c_str());
 			std::getline(ss, driver_type);
 			char_trim(driver_type, '}');
-			driver_types driver;
-			if(driver_type == "python") {
-				driver = PYTHON;
+			if(driver_type == " python") {
+				raspi.imu_driver = PYTHON;
 			} else if(driver_type == "shared_object") {
-				driver = SHARED_OBJECT;
-			}
-			if(loadIMU(raspi, path.c_str(), driver)) {
-				std::cout << "Failed to load IMU driver\n";
+				raspi.imu_driver = SHARED_OBJECT;
 			}
 		}
 	}

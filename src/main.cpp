@@ -1,6 +1,7 @@
 #include "rasfly_types.h"
 #include "rasfly_config.h"
 #include "rasfly_esc.h"
+#include "rasfly_imu.h"
 
 #include <vector>
 #include <iostream>
@@ -21,7 +22,13 @@ int main() {
 		counter++;	
 	}
 	// Bind imu driver
-
+	rasfly::imu rasfly_imu;
+	int err = rasfly_imu.loadIMU(raspi);
+	// Read state from imu
+	rasfly::state cstate;
+	if(!err) {
+		rasfly_imu.getState(cstate);
+	}
 	std::cout << "Powering Down\n";
 	return 0;
 }
