@@ -12,7 +12,7 @@ namespace rasfly {
 		int getState(state &rasfly_state);
 	private:	
 		int loadPython(hardware &raspi, const char *driver_name);
-		PyObject *pFunc, *pModule;
+		PyObject *driver_obj, *pFunc, *pModule;
 		driver_types imu_driver;
 	};
 

@@ -2,8 +2,9 @@
 #define _CONFIG_H_
 
 #include <string>
-#include <map>
-#include <regex>
+#include <functional>
+
+#define NUM_SETTINGS 3
 
 #include "rasfly_types.h"
 namespace rasfly { 
@@ -22,13 +23,11 @@ namespace rasfly {
 		void readConfig(hardware &gpio_pins, std::string fname);
 
 	private:
-		std::map<settings, std::regex> setting_map {
-			{PINS, std::regex ("pins[ \t]*=[ \t]*")},
-			{ESC_PROTOCOL, std::regex ("esc_protocol[ \t]*=[ \t]*")},
-			{IMU_DRIVER, std::regex ("imu_driver[ \t]*=[ \t]*[{]")}
-		};
+		settings settings_arr[NUM_MOTORS];
 		std::string config_name;
+		std::hash<std::string> setting_hash;
 		void processSetting(settings setting, std::string value, hardware &gpio_pins);
+		void createHash();
 	};
 }
 

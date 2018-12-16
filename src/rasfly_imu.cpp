@@ -1,11 +1,13 @@
 #include "rasfly_imu.h"
 #include <iostream>
+#include <ctime>
 
 
 rasfly::imu::~imu() {
 	if(imu_driver == PYTHON) {
 		Py_DECREF(pFunc);
 		Py_DECREF(pModule);
+		Py_DECREF(driver_obj);
 	}
 }
 
@@ -21,6 +23,7 @@ int rasfly::imu::loadIMU(hardware &raspi){
 int rasfly::imu::loadPython(hardware &raspi, const char *driver_name) {
 	PyObject *pName;
 	const char *func_name = "getState";
+	const char *init_name = "init";
 
 	// Initialize python interpreter
 	Py_Initialize();
@@ -43,13 +46,29 @@ int rasfly::imu::loadPython(hardware &raspi, const char *driver_name) {
 		return 1;
 	}
 
+	PyObject *pArgs, *pValue, *pInit;
+	pInit = PyObject_GetAttrString(pModule, init_name);	
+	if(!pInit || !PyCallable_Check(pInit)) {
+		PyErr_Print();
+		return 1;
+	}
+	driver_obj = PyTuple_New(1);
+	pValue = PyObject_CallObject(pInit, pArgs);
+	PyTuple_SetItem(driver_obj, 0, pValue);
+
 	return 0;
 }
 
 int rasfly::imu::getState(state &rasfly_state) {
-	PyObject *pArgs, *pValue;
 	if(imu_driver == PYTHON) {
-		PyObject_CallObject(pFunc, pArgs);	
+		PyObject *pValue;
+		Py_buffer buf = {0};
+		pValue = PyObject_CallObject(pFunc, driver_obj);	
+		PyErr_Print();
+		PyObject_GetBuffer(pValue, &buf, PyBUF_SIMPLE);	
+		memcpy(&rasfly_state, buf.buf, sizeof(state));
+		PyBuffer_Release(&buf);
+		printf("%f\n", rasfly_state.orientation.y);
 	}
 	return 0;
 }

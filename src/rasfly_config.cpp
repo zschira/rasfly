@@ -2,7 +2,9 @@
 #include "rasfly_imu.h"
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 #include <iostream>
+#include <map>
 
 static inline void char_trim(std::string &s, const char delim) {
     	s.erase(std::find_if(s.begin(), s.end(), [&](int ch) {
@@ -10,10 +12,10 @@ static inline void char_trim(std::string &s, const char delim) {
     	}), s.end());
 }
 
-static inline void rtrim(std::string &s) {
-    s.erase(std::find_if(s.rbegin(), s.rend(), [](int ch) {
-        return !std::isspace(ch);
-    }).base(), s.end());
+static inline void erase_space( std::string &s) {
+	s.erase(std::remove_if(s.begin(), s.end(), [](int ch) {
+		return std::isspace(ch);
+	}),s.end());
 }
 
 rasfly::config::config() {
@@ -27,20 +29,31 @@ rasfly::config::config(std::string fname) {
 
 rasfly::config::~config() {}
 
+void rasfly::config::createHash() {
+	std::map<settings, std::string> setting_map {
+			{PINS, "pins"},
+			{ESC_PROTOCOL, "esc_protocol"},
+			{IMU_DRIVER, "imu_driver"}
+	};
+	for(auto setting : setting_map) {
+		int ind = setting_hash(setting.second) % NUM_SETTINGS;
+		printf("%d\n", ind);
+		settings_arr[ind] = setting.first;
+	}
+}
+
 void rasfly::config::readConfig(hardware &raspi) {
 	std::ifstream config_file(config_name);
-	std::string line; 
-	std::smatch m;
-	auto r = std::regex ("a");
+	std::string line, setting_str, setting_val; 
 	while(std::getline(config_file, line)) {
 		char_trim(line, '#');
 		std::transform(line.begin(), line.end(), line.begin(), ::tolower);
-		for(auto const &setting : setting_map) {
-			std::regex_search(line, m, setting.second);
-			if( !m.empty()) {
-				processSetting(setting.first, m.suffix().str(), raspi);
-			}
-		}
+		erase_space(line);
+		std::istringstream ss(line);
+		std::getline(ss, setting_str, '=');
+		int ind = setting_hash(setting_str) % 3;
+		std::getline(ss, setting_val);
+		processSetting(settings_arr[ind], setting_val, raspi);
 	}	
 }
 
@@ -62,7 +75,6 @@ void rasfly::config::processSetting(settings setting, std::string value, hardwar
 			break;
 		}
 		case ESC_PROTOCOL: {
-			rtrim(value);
 			if(value == "pwm") {
 				raspi.protocol = ESC_PWM;
 				raspi.esc_range = 4000;
@@ -79,7 +91,6 @@ void rasfly::config::processSetting(settings setting, std::string value, hardwar
 			break;
 		}
 		case IMU_DRIVER: {
-			rtrim(value);
 			std::string path, driver_type;
 			std::istringstream ss(value);
 			std::getline(ss, path, ',');
