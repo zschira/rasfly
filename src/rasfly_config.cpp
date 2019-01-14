@@ -2,21 +2,10 @@
 #include "rasfly_imu.h"
 #include <fstream>
 #include <sstream>
-#include <algorithm>
 #include <iostream>
 #include <cstring>
+#include "utils.h"
 
-static inline void char_trim(std::string &s, const char delim) {
-    	s.erase(std::find_if(s.begin(), s.end(), [&](int ch) {
-        	return (ch == delim);
-    	}), s.end());
-}
-
-static inline void erase_space( std::string &s) {
-	s.erase(std::remove_if(s.begin(), s.end(), [](int ch) {
-		return std::isspace(ch);
-	}),s.end());
-}
 
 rasfly::config::config() {
 	std::string home = getenv("HOME");
@@ -34,6 +23,7 @@ void rasfly::config::createHash() {
 }
 
 void rasfly::config::readConfig(hardware &raspi) {
+	createHash();
 	std::ifstream config_file(config_name);
 	std::string line, setting_str, setting_val; 
 	while(std::getline(config_file, line)) {
@@ -43,6 +33,10 @@ void rasfly::config::readConfig(hardware &raspi) {
 		std::istringstream ss(line);
 		std::getline(ss, setting_str, '=');
 		settings val = table.access(setting_str);
+		if(val < 0 || val >= NUM_SETTINGS) {
+			continue;
+		}
+		// Get value
 		std::getline(ss, setting_val);
 		processSetting(val, setting_val, raspi);
 	}	
@@ -54,7 +48,7 @@ void rasfly::config::processSetting(settings setting, std::string value, hardwar
 		case PINS: {
 			std::string pin_str;
 			std::istringstream ss(value);
-			int counter;
+			int counter = 0;
 			while(std::getline(ss, pin_str, ',')) {
 				if(counter == NUM_MOTORS) {
 					std::cout << "RASFLY only supports 4 motors\n";
@@ -78,6 +72,8 @@ void rasfly::config::processSetting(settings setting, std::string value, hardwar
 			} else {
 				std::cout << "Invalid ESC protocol: Using standard PWM\n";
 				raspi.protocol = ESC_PWM;
+				raspi.esc_range = 4000;
+				raspi.esc_rate = 50;
 			}
 			break;
 		}
@@ -85,11 +81,12 @@ void rasfly::config::processSetting(settings setting, std::string value, hardwar
 			std::string path, driver_type;
 			std::istringstream ss(value);
 			std::getline(ss, path, ',');
+			erase_char(path, '{');
 			raspi.imu_path = new char[strlen(path.c_str())];
 			strcpy(raspi.imu_path, path.c_str());
 			std::getline(ss, driver_type);
 			char_trim(driver_type, '}');
-			if(driver_type == " python") {
+			if(driver_type == "python") {
 				raspi.imu_driver = PYTHON;
 			} else if(driver_type == "shared_object") {
 				raspi.imu_driver = SHARED_OBJECT;
