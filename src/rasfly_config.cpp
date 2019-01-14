@@ -4,7 +4,7 @@
 #include <sstream>
 #include <algorithm>
 #include <iostream>
-#include <map>
+#include <cstring>
 
 static inline void char_trim(std::string &s, const char delim) {
     	s.erase(std::find_if(s.begin(), s.end(), [&](int ch) {
@@ -30,16 +30,7 @@ rasfly::config::config(std::string fname) {
 rasfly::config::~config() {}
 
 void rasfly::config::createHash() {
-	std::map<settings, std::string> setting_map {
-			{PINS, "pins"},
-			{ESC_PROTOCOL, "esc_protocol"},
-			{IMU_DRIVER, "imu_driver"}
-	};
-	for(auto setting : setting_map) {
-		int ind = setting_hash(setting.second) % NUM_SETTINGS;
-		printf("%d\n", ind);
-		settings_arr[ind] = setting.first;
-	}
+	table.create(settingNames.begin(), settingNames.end(), settingVals.begin(), settingVals.end());
 }
 
 void rasfly::config::readConfig(hardware &raspi) {
@@ -51,9 +42,9 @@ void rasfly::config::readConfig(hardware &raspi) {
 		erase_space(line);
 		std::istringstream ss(line);
 		std::getline(ss, setting_str, '=');
-		int ind = setting_hash(setting_str) % 3;
+		settings val = table.access(setting_str);
 		std::getline(ss, setting_val);
-		processSetting(settings_arr[ind], setting_val, raspi);
+		processSetting(val, setting_val, raspi);
 	}	
 }
 

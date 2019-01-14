@@ -3,29 +3,32 @@
 
 #include <string>
 #include <functional>
+#include <array>
+#include "hash.h"
 
-#define NUM_SETTINGS 3
+const int NUM_SETTINGS = 3;
 
 #include "rasfly_types.h"
 namespace rasfly { 
+	enum settings {
+		PINS,
+		ESC_PROTOCOL,
+		IMU_DRIVER
+	};
+
 	class config {
 	public:
 		config(); 
 		config(std::string fname);
 		~config();
-		enum settings {
-			PINS,
-			ESC_PROTOCOL,
-			IMU_DRIVER
-		};
-
 		void readConfig(hardware &gpio_pins); 
 		void readConfig(hardware &gpio_pins, std::string fname);
 
 	private:
-		settings settings_arr[NUM_MOTORS];
+		std::array<std::string, NUM_SETTINGS> settingNames = {"pins", "esc_protocol", "imu_driver"};
+		std::array<settings, NUM_SETTINGS> settingVals = {PINS, ESC_PROTOCOL, IMU_DRIVER};
 		std::string config_name;
-		std::hash<std::string> setting_hash;
+		hash<std::string, settings, NUM_SETTINGS> table;
 		void processSetting(settings setting, std::string value, hardware &gpio_pins);
 		void createHash();
 	};

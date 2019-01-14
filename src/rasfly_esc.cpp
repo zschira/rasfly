@@ -9,12 +9,12 @@ rasfly::esc::esc(int pin, int rate, int range) {
 		return;
 	}
 	if(rate != gpioSetPWMfrequency(pin, rate)) {
-		std::cout << "GPIO INITIALIZE FAILURE\n";
+		std::cout << "GPIO PWM FREQUENCY FAILURE\n";
 		// TODO: failure handle
 	}
 	// Set range
 	if(range != gpioSetPWMrange(pin, range)) {
-		std::cout << "GPIO INITIALIZE FAILURE\n";
+		std::cout << "GPIO PWM RANGE FAILURE\n";
 		// TODO: failure handle
 	}
 	gpio_pin = pin;

@@ -1,6 +1,9 @@
 #ifndef _TYPES_H_
 #define _TYPES_H_
 
+#include <array>
+#include <string>
+
 #define NUM_MOTORS 4
 
 namespace rasfly {
