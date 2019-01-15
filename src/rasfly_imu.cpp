@@ -68,7 +68,6 @@ int rasfly::imu::getState(state &rasfly_state) {
 		PyObject_GetBuffer(pValue, &buf, PyBUF_SIMPLE);	
 		memcpy(&rasfly_state, buf.buf, sizeof(state));
 		PyBuffer_Release(&buf);
-		printf("%f\n", rasfly_state.orientation.y);
 	}
 	return 0;
 }

@@ -27,7 +27,10 @@ int main() {
 	// Read state from imu
 	rasfly::state cstate;
 	if(!err) {
-		rasfly_imu.getState(cstate);
+		for(int i=0; i<100; i++) {
+			rasfly_imu.getState(cstate);
+			printf("quaternion: %f,%f,%f,%f\n", cstate.orientation.w, cstate.orientation.x, cstate.orientation.y, cstate.orientation.z);
+		}
 	}
 	std::cout << "Powering Down\n";
 	return 0;
