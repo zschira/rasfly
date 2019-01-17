@@ -33,13 +33,17 @@ public:
 		}
 	}
 
-	valType access(hashType key) {
+	int access(hashType key, valType &value) {
 		int ind = hashFunc(key) % size;
-		valType value = table[ind].value;
+		int success = 0;
+		value = table[ind].value;
 		if(key != table[ind].key) {
 			value = binarytreeSearch(key, ind);
 		}
-		return value;
+		if(key != table[ind].key) {
+			success = -1;
+		}
+		return success;
 	}
 private:
 	static constexpr std::size_t size = N * 4;

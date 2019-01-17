@@ -26,8 +26,8 @@ def quadcopter(y, t, params):
 	Kp = params.Kp
 	trim = params.trim
 
-	A = np.array([[0, 1, 0, -1],
-				  [1, 0, -1, 0],
+	A = np.array([[1, 1, -1, -1],
+				  [1, -1, -1, 1],
 				  [1, -1, 1, -1],
 				  [1, 1, 1, 1]])
 
@@ -63,8 +63,8 @@ def quadcopter(y, t, params):
 					 angles[0],
 					 angles[1],
 					 angles[2],
-					 (Iy - Iz)/Ix * wy*wz + Rr/Ix * (thrusts[1, 0] - thrusts[3, 0]),
-					 (Iz - Ix)/Iy * wx*wz + Rr/Iy * (thrusts[0, 0] - thrusts[2, 0]),
+					 (Iy - Iz)/Ix * wy*wz + Rr/Ix * (thrusts[0, 0] + thrusts[1, 0] - thrusts[2, 0] - thrusts[3, 0]),
+					 (Iz - Ix)/Iy * wx*wz + Rr/Iy * (thrusts[0, 0] - thrusts[1, 0] - thrusts[2, 0] + thrusts[3, 0]),
 					 (Ix - Iy)/Iz * wy*wx + k/Iz * (thrusts[1, 0] + thrusts[3, 0] - thrusts[0, 0] - thrusts[2, 0])])
 
 	return dydt

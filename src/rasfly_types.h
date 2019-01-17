@@ -3,6 +3,7 @@
 
 #include <array>
 #include <string>
+#include <Eigen/Dense>
 
 #define NUM_MOTORS 4
 
@@ -26,8 +27,8 @@ namespace rasfly {
 
 	struct state {
 		quaternion orientation;
-		vec3 accel;
-		vec3 gyro;
+		Eigen::Vector3f accel;
+		Eigen::Vector3f gyro;
 	};
 
 	typedef struct config_struct {

@@ -33,8 +33,9 @@ rasfly::config_struct rasfly::config::readConfig() {
 		erase_space(line);
 		std::istringstream ss(line);
 		std::getline(ss, setting_str, '=');
-		settings val = table.access(setting_str);
-		if(val < 0 || val >= NUM_SETTINGS) {
+		settings val;
+		int success = table.access(setting_str, val);
+		if(success < 0 || setting_str.empty()) {
 			continue;
 		}
 		// Get value
