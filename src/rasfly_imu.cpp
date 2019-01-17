@@ -11,7 +11,7 @@ rasfly::imu::~imu() {
 	}
 }
 
-int rasfly::imu::loadIMU(hardware &raspi){
+int rasfly::imu::loadIMU(config_struct &raspi){
 	int success = 0;
 	imu_driver = raspi.imu_driver;
 	if(imu_driver == PYTHON) {
@@ -20,7 +20,7 @@ int rasfly::imu::loadIMU(hardware &raspi){
 	return 0;
 }
 
-int rasfly::imu::loadPython(hardware &raspi, const char *driver_name) {
+int rasfly::imu::loadPython(config_struct &raspi, const char *driver_name) {
 	PyObject *pName;
 	const char *func_name = "getState";
 	const char *init_name = "init";

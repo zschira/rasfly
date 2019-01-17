@@ -8,22 +8,20 @@
 
 int main() {
 	std::cout << "Starting Up\n";
-	// Struct to hold all hardware configuration
-	rasfly::hardware raspi;
 	// Read Config file and set hardware settings
-	rasfly::config configuration("/home/alarm/rasfly.config");
-	configuration.readConfig(raspi);
+	rasfly::config rasfly_config("/home/alarm/rasfly.config");
+	auto configuration = rasfly_config.readConfig();
 	// Initialize speed controllers/motors
 	rasfly::esc esc_vec[NUM_MOTORS];
 	int counter = 0;
-	for(int pin : raspi.esc_pins) {
+	for(int pin : configuration.esc_pins) {
 		// Initialize speed controller and add to vector
-		esc_vec[counter] = rasfly::esc(pin, raspi.esc_rate, raspi.esc_range);
+		esc_vec[counter] = rasfly::esc(pin, configuration.esc_rate, configuration.esc_range);
 		counter++;	
 	}
 	// Bind imu driver
 	rasfly::imu rasfly_imu;
-	int err = rasfly_imu.loadIMU(raspi);
+	int err = rasfly_imu.loadIMU(configuration);
 	// Read state from imu
 	rasfly::state cstate;
 	if(!err) {

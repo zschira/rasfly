@@ -30,14 +30,14 @@ namespace rasfly {
 		vec3 gyro;
 	};
 
-	struct hardware {
-		~hardware() { delete[] imu_path;}
+	typedef struct config_struct {
+		~config_struct() { delete[] imu_path;}
 		int esc_pins[NUM_MOTORS];
 		int num_esc;
 		esc_protocol protocol;
 		int esc_rate, esc_range;
 		driver_types imu_driver;
 		char *imu_path;
-	};
+	}config_struct;
 }
 #endif

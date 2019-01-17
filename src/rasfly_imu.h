@@ -8,10 +8,10 @@ namespace rasfly {
 	class imu {
 	public:
 		~imu();
-		int loadIMU(hardware &raspi);
+		int loadIMU(config_struct &raspi);
 		int getState(state &rasfly_state);
 	private:	
-		int loadPython(hardware &raspi, const char *driver_name);
+		int loadPython(config_struct &raspi, const char *driver_name);
 		PyObject *driver_obj, *pFunc, *pModule;
 		driver_types imu_driver;
 	};

@@ -22,7 +22,8 @@ void rasfly::config::createHash() {
 	table.create(settingNames.begin(), settingNames.end(), settingVals.begin(), settingVals.end());
 }
 
-void rasfly::config::readConfig(hardware &raspi) {
+rasfly::config_struct rasfly::config::readConfig() {
+	config_struct configuration;
 	createHash();
 	std::ifstream config_file(config_name);
 	std::string line, setting_str, setting_val; 
@@ -38,12 +39,13 @@ void rasfly::config::readConfig(hardware &raspi) {
 		}
 		// Get value
 		std::getline(ss, setting_val);
-		processSetting(val, setting_val, raspi);
+		processSetting(val, setting_val, configuration);
 	}	
+	return configuration;
 }
 
 
-void rasfly::config::processSetting(settings setting, std::string value, hardware &raspi) {
+void rasfly::config::processSetting(settings setting, std::string value, config_struct &configuration) {
 	switch(setting) {
 		case PINS: {
 			std::string pin_str;
@@ -54,26 +56,26 @@ void rasfly::config::processSetting(settings setting, std::string value, hardwar
 					std::cout << "RASFLY only supports 4 motors\n";
 					break;
 				}
-				raspi.esc_pins[counter] = std::stoi(pin_str);
+				configuration.esc_pins[counter] = std::stoi(pin_str);
 				++counter;
 			}
 			break;
 		}
 		case ESC_PROTOCOL: {
 			if(value == "pwm") {
-				raspi.protocol = ESC_PWM;
-				raspi.esc_range = 4000;
-				raspi.esc_rate = 50;
+				configuration.protocol = ESC_PWM;
+				configuration.esc_range = 4000;
+				configuration.esc_rate = 50;
 			} else if(value == "oneshot_125") {
-				raspi.protocol = ONESHOT_125;	
-				raspi.esc_rate = 50 * 8;
+				configuration.protocol = ONESHOT_125;	
+				configuration.esc_rate = 50 * 8;
 			} else if(value == "oneshot_42") {
-				raspi.protocol = ONESHOT_42;
+				configuration.protocol = ONESHOT_42;
 			} else {
 				std::cout << "Invalid ESC protocol: Using standard PWM\n";
-				raspi.protocol = ESC_PWM;
-				raspi.esc_range = 4000;
-				raspi.esc_rate = 50;
+				configuration.protocol = ESC_PWM;
+				configuration.esc_range = 4000;
+				configuration.esc_rate = 50;
 			}
 			break;
 		}
@@ -82,14 +84,14 @@ void rasfly::config::processSetting(settings setting, std::string value, hardwar
 			std::istringstream ss(value);
 			std::getline(ss, path, ',');
 			erase_char(path, '{');
-			raspi.imu_path = new char[strlen(path.c_str())];
-			strcpy(raspi.imu_path, path.c_str());
+			configuration.imu_path = new char[strlen(path.c_str())];
+			strcpy(configuration.imu_path, path.c_str());
 			std::getline(ss, driver_type);
 			char_trim(driver_type, '}');
 			if(driver_type == "python") {
-				raspi.imu_driver = PYTHON;
+				configuration.imu_driver = PYTHON;
 			} else if(driver_type == "shared_object") {
-				raspi.imu_driver = SHARED_OBJECT;
+				configuration.imu_driver = SHARED_OBJECT;
 			}
 		}
 	}

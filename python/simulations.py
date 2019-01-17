@@ -20,7 +20,7 @@ def quadcopter(y, t, params):
 	Iz = params.Iz;     # [m/s]
 	g = params.g;      # gravitational acceleration [m/s^2]
 	k = params.k
-	kd = params.kd
+	Cd = params.Cd
 	force = params.thrust
 	Kd = params.Kd
 	Kp = params.Kp
@@ -50,7 +50,7 @@ def quadcopter(y, t, params):
 	thrust = np.array([0, 0, np.sum(thrusts)]).T
 	thrust = np.matmul(R, thrust)
 	gravity = np.array([0, 0, -m*g]).T
-	drag = np.array([-u, -v, -w]).T * kd
+	drag = np.array([-u, -v, -w]).T * Cd
 
 	accel = (gravity + thrust + drag)/m
 	
@@ -78,14 +78,14 @@ class params_class():
 		self.Iz = 4e-3     # Moment of Inertia about z axis, [kg*m^2]
 		self.g = 9.81;        # gravitational acceleration
 		self.k = 0.1
-		self.kd = 1e-4
+		self.Cd = 1e-4
 		self.Kd = 5
 		self.Kp = 3
 		self.thrust = self.mass * self.g
-		self.trim = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+		self.trim = [0, 0, 0, 0, 0, 0, radians(10), 0, 0, 0, 0, 0]
 
 params = params_class()
-y = [0, 0, 0, 0, 0, 0, 0, 0, 0, radians(5), radians(30), 0]
+y = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 t = np.linspace(0, 10, 101)
 sol = integrate.odeint(quadcopter, y, t, args=(params,))
 
