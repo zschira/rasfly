@@ -11,6 +11,11 @@ def euler2mat(phi, theta, psi):
 
 	return R
 
+def getStateMat():
+	return np.array([[1, 1, -1, -1],
+				  [1, -1, -1, 1],
+				  [1, -1, 1, -1],
+				  [1, 1, 1, 1]])
 
 def quadcopter(y, t, params):
 	m = params.mass;      #[kg]
@@ -26,10 +31,7 @@ def quadcopter(y, t, params):
 	Kp = params.Kp
 	trim = params.trim
 
-	A = np.array([[1, 1, -1, -1],
-				  [1, -1, -1, 1],
-				  [1, -1, 1, -1],
-				  [1, 1, 1, 1]])
+	A = getStateMat()
 
 	u = y[3]; v = y[4]; w = y[5]
 	phi = y[6]; theta = y[7]; psi = y[8]
@@ -79,15 +81,49 @@ class params_class():
 		self.g = 9.81;        # gravitational acceleration
 		self.k = 0.1
 		self.Cd = 1e-4
-		self.Kd = 5
-		self.Kp = 3
+		self.Kd = 10
+		self.Kp = 50
 		self.thrust = self.mass * self.g
-		self.trim = [0, 0, 0, 0, 0, 0, radians(10), 0, 0, 0, 0, 0]
+		self.trim = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 params = params_class()
-y = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+y = [0, 0, 0, 0, 0, 0, radians(50), 0, 0, 0, 0, 0]
 t = np.linspace(0, 10, 101)
 sol = integrate.odeint(quadcopter, y, t, args=(params,))
+
+# back out forces
+A = getStateMat()
+trim = params.trim
+thrusts = np.zeros((sol.shape[0], 4))
+counter = 0
+for state in sol:
+	m = params.mass;      #[kg]
+	Rr = params.Rr;     # [m^2]
+	Ix = params.Ix;     # [m/s]
+	Iy = params.Iy;     # [m/s]
+	Iz = params.Iz;     # [m/s]
+	g = params.g;      # gravitational acceleration [m/s^2]
+	k = params.k
+	Cd = params.Cd
+	force = params.thrust
+	Kd = params.Kd
+	Kp = params.Kp
+	trim = params.trim
+
+	u = state[3]; v = state[4]; w = state[5]
+	phi = state[6]; theta = state[7]; psi = state[8]
+	wx = state[9]; wy = state[10]; wz = state[11]
+
+	b = np.array([[Ix/Rr * (Kd*(trim[9] - wx) + Kp*(trim[6] - phi))],
+				  [Iy/Rr * (Kd*(trim[10] - wy) + Kp*(trim[7] - theta))],
+				  [k*(Iz * Kd * (trim[11] - wz))],
+				  [force]])
+
+	t_tmp = np.linalg.solve(A, b)
+	thrusts[counter, :] = t_tmp[:, 0]
+	counter += 1
+
+
 
 
 fig = plt.figure()
@@ -114,4 +150,13 @@ ax2.plot(t, sol[:, 9])
 ax2.plot(t, sol[:, 10])
 ax2.plot(t, sol[:, 11])
 ax2.legend(["p", "q", "r"])
+
+fig3 = plt.figure()
+ax3 = fig3.add_subplot(111)
+ax3.plot(t, thrusts[:, 0])
+ax3.plot(t, thrusts[:, 1])
+ax3.plot(t, thrusts[:, 2])
+ax3.plot(t, thrusts[:, 3])
+ax3.legend(["T1", "T2", "T3", "T4"])
+
 plt.show()
