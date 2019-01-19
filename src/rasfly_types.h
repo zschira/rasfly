@@ -29,9 +29,26 @@ namespace rasfly {
 		quaternion orientation;
 		Eigen::Vector3f accel;
 		Eigen::Vector3f gyro;
+		float thrust;
 	};
 
-	typedef struct config_struct {
+	struct thrusts {
+		// Desired thrust for each motor in N
+		float T1;
+		float T2;
+		float T3;
+		float T4;
+	};
+
+	struct torques {
+		// Denotes whether each motor contributes to a torque
+		float M1;
+		float M2;
+		float M3;
+		float M4;
+	};
+
+	struct config_struct {
 		~config_struct() { delete[] imu_path;}
 		int esc_pins[NUM_MOTORS];
 		int num_esc;
@@ -39,6 +56,17 @@ namespace rasfly {
 		int esc_rate, esc_range;
 		driver_types imu_driver;
 		char *imu_path;
-	}config_struct;
+		// Physical characteristics
+		float mass;					// [kg]
+		float motor_radius;			// [m]
+		float prop_gain;			// dimensionless
+		float deriv_gain;			// dimensionless
+		float max_thrust;			// N
+		Eigen::Matrix3f moments;	// [kg*m^2]
+		// Motor torque contributions
+		torques roll;
+		torques pitch;
+		torques yaw;
+	};
 }
 #endif

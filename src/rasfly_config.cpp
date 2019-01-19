@@ -4,7 +4,7 @@
 #include <sstream>
 #include <iostream>
 #include <cstring>
-#include "utils.h"
+#include "string_utils.h"
 
 
 rasfly::config::config() {
@@ -49,16 +49,9 @@ rasfly::config_struct rasfly::config::readConfig() {
 void rasfly::config::processSetting(settings setting, std::string value, config_struct &configuration) {
 	switch(setting) {
 		case PINS: {
-			std::string pin_str;
-			std::istringstream ss(value);
-			int counter = 0;
-			while(std::getline(ss, pin_str, ',')) {
-				if(counter == NUM_MOTORS) {
-					std::cout << "RASFLY only supports 4 motors\n";
-					break;
-				}
-				configuration.esc_pins[counter] = std::stoi(pin_str);
-				++counter;
+			std::vector<std::string> pins = processList(value);
+			for(int i=0; i<4; ++i) {
+				configuration.esc_pins[i] = std::stoi(pins[i]);
 			}
 			break;
 		}
@@ -94,6 +87,57 @@ void rasfly::config::processSetting(settings setting, std::string value, config_
 			} else if(driver_type == "shared_object") {
 				configuration.imu_driver = SHARED_OBJECT;
 			}
+			break;
+		}
+		case MASS: {
+			configuration.mass = std::stof(value);
+			break;
+		}
+		case MOTOR_RADIUS: {
+			configuration.motor_radius = std::stof(value);
+			break;
+		}
+		case MASS_MOMENT_INERTIA: {
+			std::vector<std::string> moments = processList(value);
+			if(value.length() == 3) {
+				for(int i=0; i<3; ++i) {
+					configuration.moments(i, i) = std::stof(moments[i]);
+				}
+			}
+			break;
+		}
+		case PROP_GAIN: {
+			configuration.prop_gain = std::stof(value);
+			break;
+		}
+		case DERIV_GAIN: {
+			configuration.deriv_gain = std::stof(value);
+			break;
+		}
+		case MAX_THRUST: {
+			configuration.max_thrust = std::stof(value);
+			break;
+		}
+		case FRAME_TYPE: {
+			if(value == "x") {
+				configuration.roll.M1 = 1; configuration.roll.M2 = 1; configuration.roll.M3 = -1; configuration.roll.M4 = -1;
+				configuration.pitch.M1 = 1; configuration.pitch.M2 = -1; configuration.pitch.M3 = -1; configuration.pitch.M4 = 1;
+				configuration.yaw.M1 = 1; configuration.yaw.M2 = -1; configuration.yaw.M3 = 1; configuration.yaw.M4 = -1;
+			} else if(value == "plus") {
+				configuration.roll.M1 = 0; configuration.roll.M2 = 1; configuration.roll.M3 = 0; configuration.roll.M4 = -1;
+				configuration.pitch.M1 = 1; configuration.pitch.M2 = 0; configuration.pitch.M3 = -1; configuration.pitch.M4 = 0;
+				configuration.yaw.M1 = 1; configuration.yaw.M2 = -1; configuration.yaw.M3 = 1; configuration.yaw.M4 = -1;
+			}
 		}
 	}
+}
+
+std::vector<std::string> rasfly::config::processList(std::string tuple) {
+	std::vector<std::string> values;
+	std::string val;
+	std::istringstream ss(tuple);
+	while(std::getline(ss, val, ',')) {
+		values.push_back(val);
+	}
+	return values;
 }

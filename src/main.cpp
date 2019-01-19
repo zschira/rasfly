@@ -9,7 +9,7 @@
 int main() {
 	std::cout << "Starting Up\n";
 	// Read Config file and set hardware settings
-	rasfly::config rasfly_config("/home/alarm/rasfly.config");
+	rasfly::config rasfly_config("/home/alarm/rasfly/rasfly.config");
 	auto configuration = rasfly_config.readConfig();
 	// Initialize speed controllers/motors
 	rasfly::esc esc_vec[NUM_MOTORS];

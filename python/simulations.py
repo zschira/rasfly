@@ -84,10 +84,10 @@ class params_class():
 		self.Kd = 10
 		self.Kp = 50
 		self.thrust = self.mass * self.g
-		self.trim = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+		self.trim = [0, 0, 0, 0, 0, 0, radians(50), 0, 0, 0, 0, 0]
 
 params = params_class()
-y = [0, 0, 0, 0, 0, 0, radians(50), 0, 0, 0, 0, 0]
+y = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 t = np.linspace(0, 10, 101)
 sol = integrate.odeint(quadcopter, y, t, args=(params,))
 
