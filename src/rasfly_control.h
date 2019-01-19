@@ -2,6 +2,7 @@
 #define _CONTROL_H_
 
 #include "rasfly_types.h"
+#include <Eigen/Cholesky>
 
 namespace rasfly {
 	class controller {
@@ -10,15 +11,15 @@ namespace rasfly {
 		thrusts calculateThrust(state measured, state trim);
 	private:
 		// Gains
-		float roll_kd, roll_kp;
-		float pitch_kd, pitch_kp;
-		float yaw_kd, yaw_kp;
+		Eigen::Vector3f Kp;
+		Eigen::Vector3f Kd;
 		// Physical parameters
 		float motor_radius;
 		float mass;
 		Eigen::Matrix3f moments;
 		// Motor torque impacts
 		Eigen::Matrix4f torque_state;
+		Eigen::LDLT<Eigen::Matrix4f> ldlt;
 	};
 }
 

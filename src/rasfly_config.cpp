@@ -107,11 +107,17 @@ void rasfly::config::processSetting(settings setting, std::string value, config_
 			break;
 		}
 		case PROP_GAIN: {
-			configuration.prop_gain = std::stof(value);
+			float prop = std::stof(value);
+			configuration.proportional.roll = prop;
+			configuration.proportional.pitch = prop;
+			configuration.proportional.yaw = 0;
 			break;
 		}
 		case DERIV_GAIN: {
-			configuration.deriv_gain = std::stof(value);
+			float deriv = std::stof(value);
+			configuration.derivative.roll = deriv;
+			configuration.derivative.pitch = deriv;
+			configuration.derivative.yaw = deriv;
 			break;
 		}
 		case MAX_THRUST: {
@@ -120,13 +126,13 @@ void rasfly::config::processSetting(settings setting, std::string value, config_
 		}
 		case FRAME_TYPE: {
 			if(value == "x") {
-				configuration.roll.M1 = 1; configuration.roll.M2 = 1; configuration.roll.M3 = -1; configuration.roll.M4 = -1;
-				configuration.pitch.M1 = 1; configuration.pitch.M2 = -1; configuration.pitch.M3 = -1; configuration.pitch.M4 = 1;
-				configuration.yaw.M1 = 1; configuration.yaw.M2 = -1; configuration.yaw.M3 = 1; configuration.yaw.M4 = -1;
+				configuration.tau_x.M1 = 1; configuration.tau_x.M2 = 1; configuration.tau_x.M3 = -1; configuration.tau_x.M4 = -1;
+				configuration.tau_y.M1 = 1; configuration.tau_y.M2 = -1; configuration.tau_y.M3 = -1; configuration.tau_y.M4 = 1;
+				configuration.tau_z.M1 = 1; configuration.tau_z.M2 = -1; configuration.tau_z.M3 = 1; configuration.tau_z.M4 = -1;
 			} else if(value == "plus") {
-				configuration.roll.M1 = 0; configuration.roll.M2 = 1; configuration.roll.M3 = 0; configuration.roll.M4 = -1;
-				configuration.pitch.M1 = 1; configuration.pitch.M2 = 0; configuration.pitch.M3 = -1; configuration.pitch.M4 = 0;
-				configuration.yaw.M1 = 1; configuration.yaw.M2 = -1; configuration.yaw.M3 = 1; configuration.yaw.M4 = -1;
+				configuration.tau_x.M1 = 0; configuration.tau_x.M2 = 1; configuration.tau_x.M3 = 0; configuration.tau_x.M4 = -1;
+				configuration.tau_y.M1 = 1; configuration.tau_y.M2 = 0; configuration.tau_y.M3 = -1; configuration.tau_y.M4 = 0;
+				configuration.tau_z.M1 = 1; configuration.tau_z.M2 = -1; configuration.tau_z.M3 = 1; configuration.tau_z.M4 = -1;
 			}
 		}
 	}

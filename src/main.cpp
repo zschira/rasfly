@@ -2,6 +2,7 @@
 #include "rasfly_config.h"
 #include "rasfly_esc.h"
 #include "rasfly_imu.h"
+#include <rasfly_control.h>
 
 #include <vector>
 #include <iostream>
@@ -23,11 +24,13 @@ int main() {
 	rasfly::imu rasfly_imu;
 	int err = rasfly_imu.loadIMU(configuration);
 	// Read state from imu
-	rasfly::state cstate;
+	rasfly::state cstate, trim;
+	rasfly::controller pid(configuration);
 	if(!err) {
 		for(int i=0; i<100; i++) {
 			rasfly_imu.getState(cstate);
-			printf("quaternion: %f,%f,%f,%f\n", cstate.orientation.w, cstate.orientation.x, cstate.orientation.y, cstate.orientation.z);
+			auto thrust = pid.calculateThrust(cstate, trim);
+			printf("quaternion: %f,%f,%f\n", cstate.euler(0), cstate.euler(1), cstate.euler(2));
 		}
 	}
 	std::cout << "Powering Down\n";

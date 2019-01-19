@@ -26,7 +26,7 @@ namespace rasfly {
 	};
 
 	struct state {
-		quaternion orientation;
+		Eigen::Vector3f euler;
 		Eigen::Vector3f accel;
 		Eigen::Vector3f gyro;
 		float thrust;
@@ -48,6 +48,12 @@ namespace rasfly {
 		float M4;
 	};
 
+	struct gains {
+		float roll;
+		float pitch;
+		float yaw;
+	};
+
 	struct config_struct {
 		~config_struct() { delete[] imu_path;}
 		int esc_pins[NUM_MOTORS];
@@ -59,14 +65,15 @@ namespace rasfly {
 		// Physical characteristics
 		float mass;					// [kg]
 		float motor_radius;			// [m]
-		float prop_gain;			// dimensionless
-		float deriv_gain;			// dimensionless
+		gains proportional;
+		gains derivative;
+		gains integral;
 		float max_thrust;			// N
 		Eigen::Matrix3f moments;	// [kg*m^2]
 		// Motor torque contributions
-		torques roll;
-		torques pitch;
-		torques yaw;
+		torques tau_x;
+		torques tau_y;
+		torques tau_z;
 	};
 }
 #endif

@@ -1,20 +1,19 @@
 #include "rasfly_esc.h"
+#include "rasfly_logs.h"
 
-#include <iostream>
 #include <pigpio.h>
 
 rasfly::esc::esc(int pin, int rate, int range) {
 	if (gpioInitialise() < 0) {
-		std::cout << "GPIO INITIALIZE FAILURE\n";
 		return;
 	}
 	if(rate != gpioSetPWMfrequency(pin, rate)) {
-		std::cout << "GPIO PWM FREQUENCY FAILURE\n";
+		rasfly::logger.write("GPIO FREQUENCY FAILURE");
 		// TODO: failure handle
 	}
 	// Set range
 	if(range != gpioSetPWMrange(pin, range)) {
-		std::cout << "GPIO PWM RANGE FAILURE\n";
+		rasfly::logger.write("GPIO RANGE FAILURE");
 		// TODO: failure handle
 	}
 	gpio_pin = pin;
@@ -29,9 +28,11 @@ int rasfly::esc::setThrottle(unsigned throttle) {
 	if(!err) {
 		return 0;
 	} else if(err == PI_BAD_USER_GPIO) {
-		std::cout << "BAD GPIO IN SET THROTTLE\n" ;
+		rasfly::logger.write("CAN'T SET THROTTLE: BAD GPIO");
+		// TODO: failure handle
 	} else if(err == PI_BAD_DUTYCYCLE) {
-		std::cout << "BAD DUTYCYCLE IN SET THROTTLE\n" ;
+		rasfly::logger.write("CAN'T SET THROTTLE: BAD DUTYCYCLE");
+		// TODO: failure handle
 	}
 	return 1;
 }
