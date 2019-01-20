@@ -25,6 +25,7 @@ int main() {
 	auto err = rasfly_imu.loadIMU(configuration);
 	// Read state from imu
 	rasfly::state cstate, trim;
+	trim.euler(1) = 0.087;
 	trim.thrust = 0.5;
 	rasfly::controller pid(configuration);
 	if(!err) {

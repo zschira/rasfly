@@ -7,7 +7,6 @@ rasfly::imu::~imu() {
 	if(imu_driver == PYTHON) {
 		Py_DECREF(pFunc);
 		Py_DECREF(pModule);
-		Py_DECREF(driver_obj);
 	}
 }
 

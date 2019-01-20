@@ -68,7 +68,7 @@ namespace rasfly {
 
 	struct config_struct {
 		config_struct() {moments = Eigen::Matrix3f::Zero();}
-		~config_struct() { delete[] imu_path;}
+		~config_struct() {}
 		int esc_pins[NUM_MOTORS];
 		int num_esc;
 		esc_protocol protocol;
