@@ -121,7 +121,7 @@ void rasfly::config::processSetting(settings setting, std::string value, config_
 			break;
 		}
 		case MAX_THRUST: {
-			configuration.max_thrust = std::stof(value);
+			configuration.max_thrust = std::stof(value) * 4;
 			break;
 		}
 		case FRAME_TYPE: {

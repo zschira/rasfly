@@ -46,15 +46,11 @@ int rasfly::imu::loadPython(config_struct &raspi, const char *driver_name) {
 		return 1;
 	}
 
-	PyObject *pArgs, *pValue, *pInit;
-	pInit = PyObject_GetAttrString(pModule, init_name);	
-	if(!pInit || !PyCallable_Check(pInit)) {
-		PyErr_Print();
-		return 1;
+	state tmp_state;
+	for(auto i=0; i<50; ++i) {
+		// Let imu algorithms converge
+		getState(tmp_state);
 	}
-	driver_obj = PyTuple_New(1);
-	pValue = PyObject_CallObject(pInit, pArgs);
-	PyTuple_SetItem(driver_obj, 0, pValue);
 
 	return 0;
 }
@@ -67,7 +63,7 @@ int rasfly::imu::getState(state &rasfly_state) {
 		pValue = PyObject_CallObject(pFunc, driver_obj);	
 		PyErr_Print();
 		PyObject_GetBuffer(pValue, &buf, PyBUF_SIMPLE);	
-		memcpy(&imu_s, buf.buf, sizeof(state));
+		memcpy(&imu_s, buf.buf, sizeof(imu_struct));
 		PyBuffer_Release(&buf);
 		// Copy raw buffer into eigen 
 		rasfly_state.euler(0) = imu_s.orientation.x;

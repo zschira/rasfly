@@ -32,6 +32,12 @@ namespace rasfly {
 	};
 
 	struct state {
+		state() {
+			euler = Eigen::Vector3f::Zero();
+			accel = Eigen::Vector3f::Zero();
+			gyro = Eigen::Vector3f::Zero();
+			thrust = 0;
+		}
 		Eigen::Vector3f euler;
 		Eigen::Vector3f accel;
 		Eigen::Vector3f gyro;
@@ -61,6 +67,7 @@ namespace rasfly {
 	};
 
 	struct config_struct {
+		config_struct() {moments = Eigen::Matrix3f::Zero();}
 		~config_struct() { delete[] imu_path;}
 		int esc_pins[NUM_MOTORS];
 		int num_esc;

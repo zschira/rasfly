@@ -2,7 +2,7 @@
 #define _CONTROL_H_
 
 #include "rasfly_types.h"
-#include <Eigen/Cholesky>
+#include <Eigen/QR>
 
 namespace rasfly {
 	class controller {
@@ -20,7 +20,7 @@ namespace rasfly {
 		Eigen::Matrix3f moments;
 		// Motor torque impacts
 		Eigen::Matrix4f torque_state;
-		Eigen::LDLT<Eigen::Matrix4f> ldlt;
+		Eigen::ColPivHouseholderQR<Eigen::Matrix4f> ldlt;
 	};
 }
 

@@ -1,4 +1,5 @@
 #include "rasfly_control.h"
+#include <iostream>
 
 rasfly::controller::controller(config_struct configuration) {
 	// Set physical parameters used by PID controller
@@ -32,7 +33,7 @@ rasfly::thrusts rasfly::controller::calculateThrust(state measured, state trim) 
 	Eigen::Vector3f control_func = Kd.array() * delta_angle_rate.array() + Kp.array() + delta_angle.array();
 	control_func = moments * control_func;
 	control_func(0) /= motor_radius; control_func(1) /= motor_radius;
-	Eigen::Vector4f b(control_func(0), control_func(1), control_func(2), trim.thrust);
+	Eigen::Vector4f b(control_func(0), control_func(1), control_func(2), trim.thrust * max_thrust);
 	// Solve for current thrusts as a percentage of max thrust
 	Eigen::Vector4f thrusts = ldlt.solve(b);
 	thrust_struct.T1 = thrusts(0) / max_thrust;
