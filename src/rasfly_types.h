@@ -25,6 +25,12 @@ namespace rasfly {
 		double z;	
 	};
 
+	struct imu_struct {
+		vec3 orientation;
+		vec3 accel;
+		vec3 gyro;
+	};
+
 	struct state {
 		Eigen::Vector3f euler;
 		Eigen::Vector3f accel;

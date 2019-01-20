@@ -8,11 +8,12 @@ namespace rasfly {
 		esc(int pin, int rate, int range);
 		esc(){}
 		~esc() {}
-		int setThrottle(unsigned throttle);
+		int setThrottle(float throttle);
 	private:
 		int gpio_pin;
 		int rate;
 		int range;
+		unsigned steps;
 	};
 }
 

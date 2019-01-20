@@ -1,4 +1,4 @@
-set(SOURCE "rasfly_config.cpp" "rasfly_esc.cpp" "rasfly_imu.cpp")
+set(SOURCE "rasfly_config.cpp" "rasfly_esc.cpp" "rasfly_imu.cpp" "rasfly_control.cpp")
 
 find_package(PythonLibs REQUIRED)
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)

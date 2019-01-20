@@ -18,12 +18,14 @@ rasfly::esc::esc(int pin, int rate, int range) {
 	}
 	gpio_pin = pin;
 	// TODO: success handle
+	steps = 2048;
 }
 
 
-int rasfly::esc::setThrottle(unsigned throttle) {
+int rasfly::esc::setThrottle(float throttle) {
+	unsigned throttle_converted = (unsigned) (throttle * steps);
 	unsigned duty, zero_throttle = range / 20;
-	duty = zero_throttle + (zero_throttle * throttle) / 2048;
+	duty = zero_throttle + (zero_throttle * throttle_converted) / steps;
 	unsigned err = gpioPWM(gpio_pin, duty);	
 	if(!err) {
 		return 0;

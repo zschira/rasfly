@@ -2,7 +2,7 @@
 #include "rasfly_config.h"
 #include "rasfly_esc.h"
 #include "rasfly_imu.h"
-#include <rasfly_control.h>
+#include "rasfly_control.h"
 
 #include <vector>
 #include <iostream>
@@ -22,15 +22,16 @@ int main() {
 	}
 	// Bind imu driver
 	rasfly::imu rasfly_imu;
-	int err = rasfly_imu.loadIMU(configuration);
+	auto err = rasfly_imu.loadIMU(configuration);
 	// Read state from imu
 	rasfly::state cstate, trim;
 	rasfly::controller pid(configuration);
 	if(!err) {
 		for(int i=0; i<100; i++) {
 			rasfly_imu.getState(cstate);
+			printf("%f,%f,%f\n", cstate.euler(0), cstate.euler(1), cstate.euler(2));
 			auto thrust = pid.calculateThrust(cstate, trim);
-			printf("quaternion: %f,%f,%f\n", cstate.euler(0), cstate.euler(1), cstate.euler(2));
+			printf("Thrusts: %f,%f,%f,%f\n", thrust.T1, thrust.T2, thrust.T3, thrust.T4);
 		}
 	}
 	std::cout << "Powering Down\n";

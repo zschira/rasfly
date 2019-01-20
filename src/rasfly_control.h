@@ -16,6 +16,7 @@ namespace rasfly {
 		// Physical parameters
 		float motor_radius;
 		float mass;
+		float max_thrust;
 		Eigen::Matrix3f moments;
 		// Motor torque impacts
 		Eigen::Matrix4f torque_state;

@@ -15,6 +15,6 @@ class vec3(ctypes.Structure):
 
 class state(ctypes.Structure):
 	"""docstring for quaternion"""
-	_fields_ = [("orientation", quaternion),
+	_fields_ = [("orientation", vec3),
 			     ("accel", vec3),
 			     ("gyro", vec3)]

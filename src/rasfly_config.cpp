@@ -99,7 +99,7 @@ void rasfly::config::processSetting(settings setting, std::string value, config_
 		}
 		case MASS_MOMENT_INERTIA: {
 			std::vector<std::string> moments = processList(value);
-			if(value.length() == 3) {
+			if(moments.size() == 3) {
 				for(int i=0; i<3; ++i) {
 					configuration.moments(i, i) = std::stof(moments[i]);
 				}

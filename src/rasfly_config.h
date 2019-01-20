@@ -32,7 +32,7 @@ namespace rasfly {
 		config_struct readConfig(); 
 
 	private:
-		std::array<std::string, NUM_SETTINGS> settingNames = {"pins", "esc_protocol", "imu_driver", "mass", "motor_radius", "mass_moment_inertia", "Kp", "Kd", "MAX_THRUST", "FRAME_TYPE"};
+		std::array<std::string, NUM_SETTINGS> settingNames = {"pins", "esc_protocol", "imu_driver", "mass", "motor_radius", "mass_moment_inertia", "kp", "kd", "max_thrust", "frame_type"};
 		std::array<settings, NUM_SETTINGS> settingVals = {PINS, ESC_PROTOCOL, IMU_DRIVER, MASS, MOTOR_RADIUS, MASS_MOMENT_INERTIA, PROP_GAIN, DERIV_GAIN, MAX_THRUST, FRAME_TYPE};
 		std::string config_name;
 		hash<std::string, settings, NUM_SETTINGS> table;
