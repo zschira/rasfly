@@ -7,7 +7,7 @@
 #include <vector>
 #include "hash.h"
 
-const int NUM_SETTINGS = 10;
+constexpr int NUM_SETTINGS = 10;
 
 #include "rasfly_types.h"
 namespace rasfly { 

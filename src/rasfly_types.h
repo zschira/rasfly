@@ -74,7 +74,7 @@ namespace rasfly {
 		esc_protocol protocol;
 		int esc_rate, esc_range;
 		driver_types imu_driver;
-		char *imu_path;
+		std::string imu_path;
 		// Physical characteristics
 		float mass;					// [kg]
 		float motor_radius;			// [m]

@@ -21,20 +21,17 @@ int main() {
 		counter++;	
 	}
 	// Bind imu driver
-	rasfly::imu rasfly_imu;
-	auto err = rasfly_imu.loadIMU(configuration);
+	auto imu = rasfly::imu::imu_factory(configuration.imu_driver, configuration.imu_path.c_str());
 	// Read state from imu
 	rasfly::state cstate, trim;
 	trim.euler(1) = 0.087;
 	trim.thrust = 0.5;
 	rasfly::controller pid(configuration);
-	if(!err) {
-		for(int i=0; i<100; i++) {
-			rasfly_imu.getState(cstate);
-			printf("%f,%f,%f\n", cstate.euler(0), cstate.euler(1), cstate.euler(2));
-			auto thrust = pid.calculateThrust(cstate, trim);
-			printf("Thrusts: %f,%f,%f,%f\n", thrust.T1, thrust.T2, thrust.T3, thrust.T4);
-		}
+	for(int i=0; i<100; i++) {
+		imu->getState(cstate);
+		printf("%f,%f,%f\n", cstate.euler(0), cstate.euler(1), cstate.euler(2));
+		auto thrust = pid.calculateThrust(cstate, trim);
+		printf("Thrusts: %f,%f,%f,%f\n", thrust.T1, thrust.T2, thrust.T3, thrust.T4);
 	}
 	std::cout << "Powering Down\n";
 	return 0;

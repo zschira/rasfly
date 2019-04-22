@@ -78,8 +78,7 @@ void rasfly::config::processSetting(settings setting, std::string value, config_
 			std::istringstream ss(value);
 			std::getline(ss, path, ',');
 			erase_char(path, '{');
-			configuration.imu_path = new char[strlen(path.c_str())];
-			strcpy(configuration.imu_path, path.c_str());
+			configuration.imu_path = path;
 			std::getline(ss, driver_type);
 			char_trim(driver_type, '}');
 			if(driver_type == "python") {

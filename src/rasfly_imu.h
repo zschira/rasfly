@@ -3,17 +3,25 @@
 
 #include "rasfly_types.h"
 #include <Python.h>
+#include <memory>
 
 namespace rasfly {
 	class imu {
 	public:
-		~imu();
-		int loadIMU(config_struct &raspi);
-		int getState(state &rasfly_state);
-	private:	
-		int loadPython(config_struct &raspi, const char *driver_name);
+		virtual ~imu() {};
+		imu(const char *driver_path) {};
+		imu() {};
+		virtual int getState(state &rasfly_state);
+		static std::unique_ptr<imu> imu_factory(const driver_types imu_type, const char *driver_path);
+	};
+
+	class PythonDriver : public imu {
+	public:
+		~PythonDriver();
+		PythonDriver(const char *driver_path);
+		int getState(state &rasfly_state) override;
+	private:
 		PyObject *driver_obj, *pFunc, *pModule;
-		driver_types imu_driver;
 	};
 
 }
