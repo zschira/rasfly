@@ -6,25 +6,23 @@
 #include <cstring>
 #include "string_utils.h"
 
+namespace rasfly {
+std::array<std::string, NUM_SETTINGS> settingNames = {"pins", "esc_protocol", "imu_driver", "mass", "motor_radius", "mass_moment_inertia", "kp", "kd", "max_thrust", "frame_type"};
+std::array<settings, NUM_SETTINGS> settingVals = {PINS, ESC_PROTOCOL, IMU_DRIVER, MASS, MOTOR_RADIUS, MASS_MOMENT_INERTIA, PROP_GAIN, DERIV_GAIN, MAX_THRUST, FRAME_TYPE};
 
-rasfly::config::config() {
-	std::string home = getenv("HOME");
-	config_name = home + "/rasfly.config";
-}
+void processSetting(settings setting, std::string value, config_struct &gpio_pins);
+std::vector<std::string> processList(std::string tuple);
 
-rasfly::config::config(std::string fname) {
-	config_name = fname;
-}
-
-rasfly::config::~config() {}
-
-void rasfly::config::createHash() {
+hash<std::string, rasfly::settings, NUM_SETTINGS> createHash() {
+	hash<std::string, settings, NUM_SETTINGS> table;
 	table.create(settingNames.begin(), settingNames.end(), settingVals.begin(), settingVals.end());
+	return std::move(table);
+}
 }
 
-rasfly::config_struct rasfly::config::readConfig() {
+rasfly::config_struct rasfly::readConfig(std::string config_name) {
 	config_struct configuration;
-	createHash();
+	auto table = createHash();
 	std::ifstream config_file(config_name);
 	std::string line, setting_str, setting_val; 
 	while(std::getline(config_file, line)) {
@@ -46,7 +44,7 @@ rasfly::config_struct rasfly::config::readConfig() {
 }
 
 
-void rasfly::config::processSetting(settings setting, std::string value, config_struct &configuration) {
+void rasfly::processSetting(settings setting, std::string value, config_struct &configuration) {
 	switch(setting) {
 		case PINS: {
 			std::vector<std::string> pins = processList(value);
@@ -137,7 +135,7 @@ void rasfly::config::processSetting(settings setting, std::string value, config_
 	}
 }
 
-std::vector<std::string> rasfly::config::processList(std::string tuple) {
+std::vector<std::string> rasfly::processList(std::string tuple) {
 	std::vector<std::string> values;
 	std::string val;
 	std::istringstream ss(tuple);
