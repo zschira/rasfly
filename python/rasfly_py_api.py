@@ -1,20 +1,6 @@
-import ctypes
+import os
 
-class quaternion(ctypes.Structure):
-	"""docstring for quaternion"""
-	_fields_ = [("w", ctypes.c_double),
-			     ("x", ctypes.c_double),
-			     ("y", ctypes.c_double),
-			     ("z", ctypes.c_double)]
-
-class vec3(ctypes.Structure):
-	"""docstring for quaternion"""
-	_fields_ = [("x", ctypes.c_double),
-			     ("y", ctypes.c_double),
-			     ("z", ctypes.c_double)]
-
-class state(ctypes.Structure):
-	"""docstring for quaternion"""
-	_fields_ = [("orientation", vec3),
-			     ("accel", vec3),
-			     ("gyro", vec3)]
+class rasfly_api(object):
+	"""docstring for rasfly_api"""
+	def __init__(self):
+		print(os.getcwd())
