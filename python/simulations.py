@@ -43,11 +43,10 @@ def quadcopter(y, t, params):
 
 	b = np.array([[Ix/Rr * (Kd*(trim[9] - wx) + Kp*(trim[6] - phi))],
 				  [Iy/Rr * (Kd*(trim[10] - wy) + Kp*(trim[7] - theta))],
-				  [k*(Iz * Kd * (trim[11] - wz))],
+				  [-k*(Iz * Kd * (trim[11] - wz))],
 				  [force]])
 
 	thrusts = np.linalg.solve(A, b)
-	print(thrusts)
 
 	thrust = np.array([0, 0, np.sum(thrusts)]).T
 	thrust = np.matmul(R, thrust)
@@ -84,11 +83,11 @@ class params_class():
 		self.Kd = 10
 		self.Kp = 50
 		self.thrust = self.mass * self.g
-		self.trim = [0, 0, 0, 0, 0, 0, radians(50), 0, 0, 0, 0, 0]
+		self.trim = [0, 0, 0, 0, 0, 0, radians(50), radians(50), 0, 0, 0, radians(10)]
 
 params = params_class()
 y = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-t = np.linspace(0, 10, 101)
+t = np.linspace(0, 10, 1000)
 sol = integrate.odeint(quadcopter, y, t, args=(params,))
 
 # back out forces
@@ -124,14 +123,16 @@ for state in sol:
 	counter += 1
 
 
+minim = sol[:, :3].min()
+maxim = sol[:, :3].max()
 
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
-ax.set_xlim3d(-10, 10)
-ax.set_ylim3d(-10, 10)
-ax.set_zlim3d(-10, 10)
+ax.set_xlim3d(minim, maxim)
+ax.set_ylim3d(minim, maxim)
+ax.set_zlim3d(minim, maxim)
 ax.plot(sol[:,0], sol[:,1], sol[:,2])
 
 fig2 = plt.figure()
@@ -141,7 +142,6 @@ ax2.plot(t, sol[:, 6])
 ax2.plot(t, sol[:, 7])
 ax2.plot(t, sol[:, 8])
 ax2.legend(["theta", "phi", "psi"])
-plt.show()
 
 fig2 = plt.figure()
 ax2 = fig2.add_subplot(111)

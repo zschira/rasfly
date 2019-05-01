@@ -4,5 +4,6 @@
 
 int main() {
 	rasfly::rasfly_app app;
+	app.run();
 	return 0;
 }
