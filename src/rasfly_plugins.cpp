@@ -72,6 +72,11 @@ State rasfly::Plugins::GetState() {
 	return current;
 }
 
+Thrust rasfly::Plugins::CalcThrust() {
+	Thrust thust;
+	return thust;
+}
+
 bool rasfly::Plugins::IsImplemented(const char *function) {
 	return function_implemented[function];
 }

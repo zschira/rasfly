@@ -12,6 +12,7 @@ public:
 	Plugins();
 	~Plugins();	
 	State GetState();
+	Thrust CalcThrust();
 	bool IsImplemented(const char *function);
 private:
 	void BindPlugins();

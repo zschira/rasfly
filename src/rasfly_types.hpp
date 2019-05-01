@@ -28,4 +28,8 @@ struct State {
 	Quaternion quaternion;
 };
 
+struct Thrust {
+
+};
+
 #endif
