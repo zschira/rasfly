@@ -1,10 +1,9 @@
 #ifndef _RASFLY_PLUGINS_H_
 #define _RASFLY_PLUGINS_H_
 
-#include <Python.h>
 #include "rasfly_types.hpp"
 #include <map>
-#include <string>
+#include <memory>
 
 namespace rasfly {
 
@@ -13,11 +12,12 @@ public:
 	Plugins();
 	~Plugins();	
 	State GetState();
+	bool IsImplemented(const char *function);
 private:
 	void BindPlugins();
-	PyObject *pClass, *pModule, *pInstance, *pDict;
-	PyObject *imu, *filter, *controller, *esc;
-	std::map<std::string, bool> function_implemented;
+	struct PyObjs;
+	std::unique_ptr<PyObjs> pobjs;
+	std::map<const char *, bool> function_implemented;
 	const char *driver_name, *class_name;
 };
 
