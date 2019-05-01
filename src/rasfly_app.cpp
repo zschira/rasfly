@@ -10,12 +10,15 @@ rasfly::rasfly_app::rasfly_app() {
 }
 
 void rasfly::rasfly_app::BindIMU() {
-	_imu->getState = [this]() -> State {
-		return plugins.GetState();
-	};
+	if(plugins.IsImplemented("imu")) {
+		_imu->getState = [this]() -> State {
+			return plugins.GetState();
+		};
+	}
 }
 
 void rasfly::rasfly_app::run() {
 	auto curr = _imu->getState();
 	std::cout << curr.x << "\n";
+	std::cout << curr.quaternion.z << "\n";
 }
