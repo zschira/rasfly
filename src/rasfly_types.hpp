@@ -12,7 +12,7 @@ struct Quaternion {
 
 struct State {
 	State() {}
-	State(nlohmann::json json_str) {
+	State(const nlohmann::json &json_str) {
 		x = json_str["x"];
 		y = json_str["y"];
 		z = json_str["z"];
