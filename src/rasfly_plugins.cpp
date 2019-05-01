@@ -56,7 +56,8 @@ rasfly::Plugins::~Plugins() {
 
 void rasfly::Plugins::BindPlugins() {
 	PyObject *result;
-	if((result = PyObject_CallMethod(pobjs->pInstance, "BindIMU", NULL)) != Py_None) {
+
+	if((result = PyObject_CallMethod(pobjs->pInstance, "BindFunc", "(s)", "imu")) != Py_None) {
 		function_implemented["imu"] = true;
 	}
 }
