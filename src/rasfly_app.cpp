@@ -4,9 +4,9 @@
 
 rasfly::rasfly_app::rasfly_app() {
 	_imu = std::make_unique<IMU>();
-	_controller = std::make_unique<Controller>();
 	std::ifstream config_file("rasfly.json");
 	config_file >> config;
+	_controller = std::make_unique<Controller>(config);
 	BindIMU();
 }
 
@@ -18,7 +18,7 @@ void rasfly::rasfly_app::BindIMU() {
 	}
 
 	if(plugins.IsImplemented("controller")) {
-		_controller->calcThrust = [this](State s) -> Thrust {
+		_controller->calcThrust = [this](State s) -> Thrust_4M {
 			return plugins.CalcThrust();
 		};
 	}

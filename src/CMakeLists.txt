@@ -1,7 +1,7 @@
-set(SOURCE rasfly_app.cpp rasfly_plugins.cpp rasfly_imu.cpp)
+set(SOURCE rasfly_controller.cpp rasfly_app.cpp rasfly_plugins.cpp rasfly_imu.cpp)
 
 find_package(PythonLibs REQUIRED)
-# find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 
 if(CMAKE_BUILD_TYPE MATCHES SHARED)
 	add_library(rasfly_lib SHARED ${SOURCE})
@@ -10,7 +10,7 @@ else(CMAKE_BUILD_TYPE MATCHES SHARED)
 endif(CMAKE_BUILD_TYPE MATCHES SHARED)
 target_link_libraries(rasfly_lib  ${PYTHON_LIBRARIES})
 # target_link_libraries(rasfly_lib pigpio pthread)
-# target_link_libraries (rasfly_lib Eigen3::Eigen)
+target_link_libraries (rasfly_lib Eigen3::Eigen)
 # target_include_directories(rasfly_lib PUBLIC ${PIGPIO_INCLUDE_DIR})
 # target_include_directories(rasfly_lib PUBLIC ${EIGEN3_INCLUDE_DIR})
 target_include_directories(rasfly_lib PUBLIC ${PYTHON_INCLUDE_DIRS})
