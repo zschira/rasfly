@@ -6,7 +6,7 @@ rasfly::rasfly_app::rasfly_app() {
 	_imu = std::make_unique<IMU>();
 	std::ifstream config_file("rasfly.json");
 	config_file >> config;
-	_controller = std::make_unique<Controller>(config);
+	//_controller = std::make_unique<Controller>(config);
 	BindIMU();
 }
 

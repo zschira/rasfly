@@ -2,6 +2,27 @@
 #include "json.hpp"
 #include <Python.h>
 
+static double x = 0;
+
+static PyObject * set_x(PyObject * self, PyObject * args) {
+	PyObject * x_str = PyDict_GetItemString(args, "x");
+	PyArg_Parse(x_str, "d", &x);	
+	PyObject * succes = PyLong_FromLong(0);
+	return succes;
+}
+
+static PyMethodDef EmbMethods[] = {
+	{"set_x", set_x, METH_O, "Set x"}
+};
+
+static PyModuleDef EmbModule = {
+	PyModuleDef_HEAD_INIT, "rasfly", "rasfly api", -1, EmbMethods, NULL, NULL, NULL, NULL
+};
+
+static PyObject * PyInit_em(void) {
+	return PyModule_Create(&EmbModule);
+}
+
 struct rasfly::Plugins::PyObjs {
 	PyObject *pClass, *pModule, *pInstance, *pDict;
 };
@@ -17,6 +38,7 @@ rasfly::Plugins::Plugins() : driver_name{"rasfly_py_api"}, class_name{"rasfly_ap
 	PyObject * pName;
 
 	// Initialize python interpreter
+	PyImport_AppendInittab("rasfly", &PyInit_em);
 	Py_Initialize();
 
 	// Set import path

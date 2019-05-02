@@ -27,7 +27,7 @@ struct rasfly::Controller::DefaultController {
 	Eigen::ColPivHouseholderQR<Eigen::Matrix4d> ldlt;
 };
 
-rasfly::Controller::Controller(nlohmann::json config) : properties(config), pimpl(std::make_unique<DefaultController>()) {
+rasfly::Controller::Controller(nlohmann::json config) : properties(config), pimpl(std::make_unique<DefaultController>(properties)) {
 	
 }
 
