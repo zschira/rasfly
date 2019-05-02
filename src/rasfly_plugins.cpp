@@ -62,7 +62,7 @@ void rasfly::Plugins::BindPlugins() {
 	}
 }
 
-State rasfly::Plugins::GetState() {
+rasfly::State rasfly::Plugins::GetState() {
 	char *current_json;
 	PyObject *pResult = PyObject_CallMethod(pobjs->pInstance, "GetState", NULL);
 	PyArg_Parse(pResult, "s", &current_json);
@@ -72,8 +72,8 @@ State rasfly::Plugins::GetState() {
 	return current;
 }
 
-Thrust rasfly::Plugins::CalcThrust() {
-	Thrust thust;
+rasfly::Thrust_4M rasfly::Plugins::CalcThrust() {
+	Thrust_4M thust;
 	return thust;
 }
 
