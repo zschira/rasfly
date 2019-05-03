@@ -46,10 +46,10 @@ struct MomentsInertia {		// [kg*m^2]
 
 struct TorqueContribution {
 		// Denotes whether each motor contributes to a torque
-		float M1;
-		float M2;
-		float M3;
-		float M4;
+		double M1;
+		double M2;
+		double M3;
+		double M4;
 };
 
 struct PhysicalProperties {
