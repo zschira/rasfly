@@ -1,30 +1,11 @@
 #include "rasfly_plugins.hpp"
+#include "rasfly_plugins_api.hpp"
 #include "json.hpp"
 #include <Python.h>
 
-static double x = 0;
-
-static PyObject * set_x(PyObject * self, PyObject * args) {
-	PyObject * x_str = PyDict_GetItemString(args, "x");
-	PyArg_Parse(x_str, "d", &x);	
-	PyObject * succes = PyLong_FromLong(0);
-	return succes;
-}
-
-static PyMethodDef EmbMethods[] = {
-	{"set_x", set_x, METH_O, "Set x"}
-};
-
-static PyModuleDef EmbModule = {
-	PyModuleDef_HEAD_INIT, "rasfly", "rasfly api", -1, EmbMethods, NULL, NULL, NULL, NULL
-};
-
-static PyObject * PyInit_em(void) {
-	return PyModule_Create(&EmbModule);
-}
-
 struct rasfly::Plugins::PyObjs {
 	PyObject *pClass, *pModule, *pInstance, *pDict;
+	std::map<const char *, PyObject *> func_map;
 };
 
 rasfly::Plugins::Plugins() : driver_name{"rasfly_py_api"}, class_name{"rasfly_api"}, pobjs(std::make_unique<PyObjs>()),
@@ -35,10 +16,12 @@ rasfly::Plugins::Plugins() : driver_name{"rasfly_py_api"}, class_name{"rasfly_ap
 		{"esc", false} 
 	}
 {
-	PyObject * pName;
+	// Create python api module
+	InitState(api_state);
+	InitThrust(api_thrust);
+	PyImport_AppendInittab("rasfly", &PyInit_api);
 
 	// Initialize python interpreter
-	PyImport_AppendInittab("rasfly", &PyInit_em);
 	Py_Initialize();
 
 	// Set import path
@@ -47,7 +30,7 @@ rasfly::Plugins::Plugins() : driver_name{"rasfly_py_api"}, class_name{"rasfly_ap
 	PyRun_SimpleString("sys.path.append(os.getcwd())");
 
 	// Import module
-	pName = PyUnicode_DecodeFSDefault(driver_name);
+	PyObject *pName = PyUnicode_DecodeFSDefault(driver_name);
 	if((pobjs->pModule = PyImport_Import(pName)) == NULL) {
 		PyErr_Print();
 		exit(0);
@@ -73,30 +56,25 @@ rasfly::Plugins::~Plugins() {
 	Py_DecRef(pobjs->pDict);
 	Py_DecRef(pobjs->pClass);
 	Py_DecRef(pobjs->pModule);
+	for(auto const& func : pobjs->func_map) {
+		Py_DecRef(func.second);
+	}
 	Py_Finalize();
 }
 
 void rasfly::Plugins::BindPlugins() {
-	PyObject *result;
+	for(auto &func : function_implemented) {
+		PyObject * result = PyObject_CallMethod(pobjs->pInstance, "BindFunc", "(s)", func.first);
 
-	if((result = PyObject_CallMethod(pobjs->pInstance, "BindFunc", "(s)", "imu")) != Py_None) {
-		function_implemented["imu"] = true;
+		if(result != Py_None && PyCallable_Check(result)) {
+			func.second = true;
+			pobjs->func_map[func.first] = result;
+		}
 	}
 }
 
-rasfly::State rasfly::Plugins::GetState() {
-	char *current_json;
-	PyObject *pResult = PyObject_CallMethod(pobjs->pInstance, "GetState", NULL);
-	PyArg_Parse(pResult, "s", &current_json);
-	auto j = nlohmann::json::parse(current_json);
-	State current(j);
-	Py_DecRef(pResult);
-	return current;
-}
-
-rasfly::Thrust_4M rasfly::Plugins::CalcThrust() {
-	Thrust_4M thust;
-	return thust;
+void rasfly::Plugins::Execute(const char *function) {
+	PyObject_CallObject(pobjs->func_map[function], NULL);
 }
 
 bool rasfly::Plugins::IsImplemented(const char *function) {

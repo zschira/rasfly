@@ -1,0 +1,19 @@
+{
+	"roll_proportional_gain": 10,
+	"pitch_proportional_gain": 10,
+	"yaw_proportional_gain": 10,
+	"roll_derivative_gain": 10,
+	"pitch_derivative_gain": 10,
+	"yaw_derivative_gain": 10,
+	"roll_integral_gain": 10,
+	"pitch_integral_gain": 10,
+	"yaw_integral_gain": 10,
+	"Ix": 2e-3,
+	"Iy": 2e-3,
+	"Iz": 4e-3,
+	"mass": 0.5,
+	"max_thrust": 3.6,
+	"motor_radius": 10.16,
+	"esc_protocol": "pwm",
+	"frame_type": "x"
+}

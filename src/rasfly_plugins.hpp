@@ -11,9 +11,10 @@ class Plugins {
 public:
 	Plugins();
 	~Plugins();	
-	State GetState();
-	Thrust_4M CalcThrust();
+	void Execute(const char *function);
 	bool IsImplemented(const char *function);
+	State api_state;
+	Thrust_4M api_thrust;
 private:
 	void BindPlugins();
 	struct PyObjs;
