@@ -17,8 +17,8 @@ rasfly::Plugins::Plugins() : driver_name{"rasfly_py_api"}, class_name{"rasfly_ap
 	}
 {
 	// Create python api module
-	InitState(api_state);
-	InitThrust(api_thrust);
+	InitState(&api_state);
+	InitThrust(&api_thrust);
 	PyImport_AppendInittab("rasfly", &PyInit_api);
 
 	// Initialize python interpreter

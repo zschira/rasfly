@@ -4,64 +4,40 @@
 #include <Python.h>
 #include "rasfly_types.hpp"
 
-static double *x = NULL;
-static double *y = NULL;
-static double *z = NULL;
-static double *qw = NULL;
-static double *qx = NULL;
-static double *qy = NULL;
-static double *qz = NULL;
-static double *t1 = NULL;
-static double *t2 = NULL;
-static double *t3 = NULL;
-static double *t4 = NULL;
+rasfly::State *py_state;
+rasfly::Thrust_4M *py_thrust;
 
-static PyObject * set_position(PyObject * self, PyObject * args) {
-	auto status = PyArg_ParseTuple(args, "ddd", x, y, z);
-	if(!status) {
+PyObject * set_Vec3(PyObject *self, PyObject *args, rasfly::Vec3 &vec) {
+	if(!PyArg_ParseTuple(args, "ddd", &vec.x, &vec.y, &vec.z)) {
 		PyErr_Print();
 	}
 	PyObject * succes = PyLong_FromLong(0);
 	return succes;
 }
 
-static PyObject * set_quaternion(PyObject * self, PyObject * args) {
-	auto status = PyArg_ParseTuple(args, "dddd", qw, qx, qy, qz);
-	if(!status) {
-		PyErr_Print();
-	}
-	PyObject * succes = PyLong_FromLong(0);
-	return succes;
-}
+auto set_position = [](PyObject *self, PyObject *args) {return set_Vec3(self, args, py_state->position);};
+auto set_rotation = [](PyObject *self, PyObject *args) {return set_Vec3(self, args, py_state->rotation);};
 
-static PyMethodDef api_Methods[] = {
+PyMethodDef api_Methods[] = {
 	{"set_position", set_position, METH_VARARGS, "Set position vector"},
+	{"set_rotation", set_rotation, METH_VARARGS, "Set euler angles"},
 	{NULL, NULL, 0, NULL}
 };
 
-static PyModuleDef api_Module = {
+PyModuleDef api_Module = {
 	PyModuleDef_HEAD_INIT, "rasfly", "rasfly api", -1, api_Methods, NULL, NULL, NULL, NULL
 };
 
-static PyObject * PyInit_api(void) {
+PyObject * PyInit_api(void) {
 	return PyModule_Create(&api_Module);
 }
 
-static void InitState(rasfly::State &api_state) {
-	x = &api_state.x;
-	y = &api_state.y;
-	z = &api_state.z;
-	qw = &api_state.quaternion.w;
-	qx = &api_state.quaternion.x;
-	qy = &api_state.quaternion.y;
-	qz = &api_state.quaternion.z;
+void InitState(rasfly::State *api_state) {
+	py_state = api_state;
 }
 
-static void InitThrust(rasfly::Thrust_4M &api_thrust) {
-	t1 = &api_thrust.T1;
-	t2 = &api_thrust.T2;
-	t3 = &api_thrust.T3;
-	t4 = &api_thrust.T4;	
+void InitThrust(rasfly::Thrust_4M *api_thrust) {
+	py_thrust = api_thrust;
 }
 
 #endif
