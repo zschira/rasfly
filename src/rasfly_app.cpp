@@ -20,5 +20,7 @@ void rasfly::rasfly_app::BindIMU() {
 }
 
 void rasfly::rasfly_app::run() {
+	State trime;
 	auto curr = _imu->getState();
+	auto thrust = _controller->calcThrust(curr, trime, 0.5);
 }

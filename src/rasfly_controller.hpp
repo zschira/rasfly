@@ -12,7 +12,7 @@ class Controller {
 public:
 	Controller(nlohmann::json config);
 	~Controller();
-	std::function<Thrust_4M(State)> calcThrust;
+	std::function<Thrust_4M(State&, State&, double)> calcThrust;
 private:
 	struct DefaultController;
 	std::unique_ptr<DefaultController> pimpl;

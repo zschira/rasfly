@@ -10,16 +10,21 @@ namespace rasfly {
 enum class Unit { DISTANCE, VELOCITY, ACCELERATION, ANGLE, ANGLE_RATE, ANGLE_ACCEL };
 
 struct Vec3 {
+	Vec3() { values.fill(0.0); }
+	Vec3(double _x, double _y, double _z) { x = _x; y = _y; z = _z; }
 	std::array<double, 3> values;
 	double &x = values[0];
 	double &y = values[1];
 	double &z = values[2];
-	friend std::array<double, 3> operator-(const Vec3& lhs, const Vec3& rhs) {
-		std::array<double, 3> result;
-		result[0] = lhs.x - rhs.x;
-		result[1] = lhs.x - rhs.x;
-		result[2] = lhs.x - rhs.x;
-		return result;
+	
+	inline friend Vec3 operator-(const Vec3& lhs, const Vec3& rhs) {
+		return Vec3(lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z);
+	}
+
+	template<class mat>
+	inline friend mat& operator<< (mat& lhs, const Vec3& rhs) {
+		lhs << rhs.x, rhs.y, rhs.z;
+		return lhs;
 	}
 };
 
@@ -83,9 +88,11 @@ struct PhysicalProperties {
 	{
 		mass = json_str["mass"];
 		motor_radius = json_str["motor_radius"];
+		max_thrust = json_str["max_thrust"];
 	}
 	double mass;			// [kg]
 	double motor_radius;	// [m]
+	double max_thrust;		// [N]
 	Gains roll;
 	Gains pitch;
 	Gains yaw;
@@ -96,6 +103,13 @@ struct PhysicalProperties {
 };
 
 struct Thrust_4M {
+	Thrust_4M(const double _T1, const double _T2, const double _T3, const double _T4) {
+		T1 = _T1;
+		T2 = _T2;
+		T3 = _T3;
+		T4 = _T4;
+	}
+	Thrust_4M() { T1 = 0.0; T2 = 0.0; T3 = 0.0; T4 = 0.0; }
 	double T1;
 	double T2;
 	double T3;
