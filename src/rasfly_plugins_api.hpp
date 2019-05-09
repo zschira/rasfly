@@ -15,12 +15,24 @@ PyObject * set_Vec3(PyObject *self, PyObject *args, rasfly::Vec3 &vec) {
 	return succes;
 }
 
+PyObject * get_Vec3(PyObject *self, PyObject *args, rasfly::Vec3 &vec) {
+	PyObject *tuple = PyTuple_New(3);
+	PyTuple_SetItem(tuple, 0, PyFloat_FromDouble(vec.x));
+	PyTuple_SetItem(tuple, 1, PyFloat_FromDouble(vec.y));
+	PyTuple_SetItem(tuple, 2, PyFloat_FromDouble(vec.z));
+	return tuple;
+}
+
 auto set_position = [](PyObject *self, PyObject *args) {return set_Vec3(self, args, py_state->position);};
 auto set_rotation = [](PyObject *self, PyObject *args) {return set_Vec3(self, args, py_state->rotation);};
+auto get_position = [](PyObject *self, PyObject *args) {return get_Vec3(self, args, py_state->position);};
+auto get_rotation = [](PyObject *self, PyObject *args) {return get_Vec3(self, args, py_state->rotation);};
 
 PyMethodDef api_Methods[] = {
 	{"set_position", set_position, METH_VARARGS, "Set position vector"},
 	{"set_rotation", set_rotation, METH_VARARGS, "Set euler angles"},
+	{"get_position", get_position, METH_NOARGS, "Get position vector"},
+	{"get_rotation", get_rotation, METH_NOARGS, "Get rotation vector"},
 	{NULL, NULL, 0, NULL}
 };
 

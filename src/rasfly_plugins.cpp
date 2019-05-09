@@ -75,6 +75,7 @@ void rasfly::Plugins::BindPlugins() {
 
 void rasfly::Plugins::Execute(const char *function) {
 	PyObject_CallObject(pobjs->func_map[function], NULL);
+	PyErr_Print();
 }
 
 bool rasfly::Plugins::IsImplemented(const char *function) {
