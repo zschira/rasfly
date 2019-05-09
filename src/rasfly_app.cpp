@@ -8,6 +8,7 @@ rasfly::rasfly_app::rasfly_app() {
 	_imu = std::make_unique<IMU>();
 	_filter = std::make_unique<Filter>();
 	_controller = std::make_unique<Controller>(config);
+	_motors = std::make_unique<Motors>();
 	BindCallbacks();
 }
 

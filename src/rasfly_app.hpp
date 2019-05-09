@@ -7,6 +7,7 @@
 #include "rasfly_imu.hpp"
 #include "rasfly_controller.hpp"
 #include "rasfly_filter.hpp"
+#include "rasfly_motors.hpp"
 
 namespace rasfly {
 class rasfly_app {
@@ -20,7 +21,7 @@ private:
 	std::unique_ptr<IMU> _imu;
 	std::unique_ptr<Filter> _filter;
 	std::unique_ptr<Controller> _controller;
-	// std::unique_ptr<esc> _esc;
+	std::unique_ptr<Motors> _motors;
 };
 
 }
