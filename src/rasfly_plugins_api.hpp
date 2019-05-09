@@ -6,6 +6,8 @@
 
 rasfly::State *py_state;
 rasfly::Thrust_4M *py_thrust;
+rasfly::State *py_trim;
+double *py_thrust_mag;
 
 PyObject * set_Vec3(PyObject *self, PyObject *args, rasfly::Vec3 &vec) {
 	if(!PyArg_ParseTuple(args, "ddd", &vec.x, &vec.y, &vec.z)) {
@@ -44,12 +46,11 @@ PyObject * PyInit_api(void) {
 	return PyModule_Create(&api_Module);
 }
 
-void InitState(rasfly::State *api_state) {
+void InitAPI(rasfly::State *api_state, rasfly::Thrust_4M *api_thrust, rasfly::PilotInput *api_input) {
 	py_state = api_state;
-}
-
-void InitThrust(rasfly::Thrust_4M *api_thrust) {
 	py_thrust = api_thrust;
+	py_trim = &api_input->trim;
+	py_thrust_mag = &api_input->thrust;
 }
 
 #endif

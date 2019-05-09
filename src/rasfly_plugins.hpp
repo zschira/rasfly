@@ -15,6 +15,7 @@ public:
 	bool IsImplemented(const char *function);
 	State api_state;
 	Thrust_4M api_thrust;
+	PilotInput api_input;
 private:
 	void BindPlugins();
 	struct PyObjs;

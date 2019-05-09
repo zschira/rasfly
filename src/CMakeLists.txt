@@ -1,4 +1,4 @@
-set(SOURCE rasfly_controller.cpp rasfly_app.cpp rasfly_plugins.cpp rasfly_imu.cpp rasfly_filter.cpp rasfly_motors.cpp)
+set(SOURCE rasfly_controller.cpp rasfly_app.cpp rasfly_plugins.cpp rasfly_imu.cpp rasfly_filter.cpp rasfly_motors.cpp rasfly_inputs.cpp)
 
 find_package(PythonLibs REQUIRED)
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)

@@ -8,6 +8,7 @@
 #include "rasfly_controller.hpp"
 #include "rasfly_filter.hpp"
 #include "rasfly_motors.hpp"
+#include "rasfly_inputs.hpp"
 
 namespace rasfly {
 class rasfly_app {
@@ -22,6 +23,7 @@ private:
 	std::unique_ptr<Filter> _filter;
 	std::unique_ptr<Controller> _controller;
 	std::unique_ptr<Motors> _motors;
+	std::unique_ptr<Inputs> _inputs;
 };
 
 }

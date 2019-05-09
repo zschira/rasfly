@@ -39,6 +39,11 @@ struct State {
 	Vec3 rotation_a;
 };
 
+struct PilotInput {
+	State trim;
+	double thrust;
+};
+
 struct Gains {
 	Gains(const nlohmann::json &json_str, std::string axis) {
 		kp = json_str[axis + "_proportional_gain"];

@@ -9,6 +9,7 @@ rasfly::rasfly_app::rasfly_app() {
 	_filter = std::make_unique<Filter>();
 	_controller = std::make_unique<Controller>(config);
 	_motors = std::make_unique<Motors>();
+	_inputs = std::make_unique<Inputs>();
 	BindCallbacks();
 }
 
@@ -27,17 +28,26 @@ void rasfly::rasfly_app::BindCallbacks() {
 		};
 	}
 
+	if(plugins.IsImplemented("inputs")) {
+		_inputs->getPilotInput = [this]() -> PilotInput {
+			plugins.Execute("inputs");
+			return plugins.api_input;
+		};
+	}
+
 	if(plugins.IsImplemented("controller")) {
 		_controller->calcThrust = [this](State&, State&, double) -> Thrust_4M {
 			plugins.Execute("controller");
 			return plugins.api_thrust;
 		};
 	}
+
 }
 
 void rasfly::rasfly_app::run() {
-	State trime;
 	auto curr = _imu->getState();
 	auto filtered = _filter->filterState(curr);
-	auto thrust = _controller->calcThrust(curr, trime, 0.5);
+	auto pilot_input = _inputs->getPilotInput();
+	auto thrust = _controller->calcThrust(filtered, pilot_input.trim, pilot_input.thrust);
+	_motors->setThrust(thrust);
 }

@@ -12,8 +12,9 @@ rasfly::Plugins::Plugins() : driver_name{"rasfly_py_api"}, class_name{"rasfly_ap
 	function_implemented{
 		{"imu", false}, 
 		{"filter", false}, 
+		{"inputs", false}, 
 		{"controller", false}, 
-		{"esc", false} 
+		{"motors", false} 
 	}
 {
 	// Create python api module

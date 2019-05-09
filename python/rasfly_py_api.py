@@ -11,7 +11,7 @@ class rasfly_api(object):
 		sys.path.append(os.getcwd() + "/python")
 		self.objs = []
 		self.keys = ['imu', 'filter', 'controller']
-		self.plugin_funcs = {'imu': None, 'filter': None, 'controller': None}
+		self.plugin_funcs = {'imu': None, 'filter': None, 'input': None, 'controller': None, 'motors': None}
 		self.state = {'x': 0, 'y': 0, 'z': 0, 'qw': 0, 'qx': 0, 'qy': 0, 'qz': 0}
 		for mod_name in plugins.__all__:
 			mod = plugins.__dict__.get(mod_name)
