@@ -8,7 +8,7 @@ namespace rasfly {
 
 class Inputs {
 public:
-	std::function<PilotInput()> getPilotInput;
+	std::function<State()> getPilotInput;
 };
 
 }
