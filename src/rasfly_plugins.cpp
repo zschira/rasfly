@@ -1,12 +1,7 @@
 #include "rasfly_plugins.hpp"
 #include "rasfly_plugins_api.hpp"
 #include "json.hpp"
-#include <Python.h>
-
-struct rasfly::Plugins::PyObjs {
-	PyObject *pClass, *pModule, *pInstance, *pDict;
-	std::map<const char *, PyObject *> func_map;
-};
+#include "log.hpp"
 
 rasfly::Plugins::Plugins() : driver_name{"rasfly_py_api"}, class_name{"rasfly_api"}, pobjs(std::make_unique<PyObjs>()),
 	function_implemented{
@@ -17,9 +12,13 @@ rasfly::Plugins::Plugins() : driver_name{"rasfly_py_api"}, class_name{"rasfly_ap
 		{"motors", false} 
 	}
 {
+	pobjs->py_type_map = {
+	    {"vec3", &vec3_type},
+	    {"state", &state_type}
+	};
+	PyObject *module, *dict, *type;
 	// Create python api module
-	InitAPI(&api_state, &api_thrust, &api_input);
-	PyImport_AppendInittab("rasfly", &PyInit_api);
+	PyImport_AppendInittab("rasfly", &PyInit_rasfly);
 
 	// Initialize python interpreter
 	Py_Initialize();
@@ -29,53 +28,48 @@ rasfly::Plugins::Plugins() : driver_name{"rasfly_py_api"}, class_name{"rasfly_ap
 	PyRun_SimpleString("import os");
 	PyRun_SimpleString("sys.path.append(os.getcwd())");
 
-	// Import module
-	PyObject *pName = PyUnicode_DecodeFSDefault(driver_name);
-	if((pobjs->pModule = PyImport_Import(pName)) == NULL) {
+	// Import api module
+	if((module = PyImport_ImportModule(driver_name)) == NULL) {
 		PyErr_Print();
 		exit(0);
 	}
 
 	// Load api class
-	pobjs->pDict = PyModule_GetDict(pobjs->pModule);
-	pobjs->pClass = PyDict_GetItemString(pobjs->pDict, class_name);
+	dict = PyModule_GetDict(module);
+	type = PyDict_GetItemString(dict, class_name);
 
-	if(!PyCallable_Check(pobjs->pClass)) {
+	// Load api class
+	if(!PyCallable_Check(type)) {
 		PyErr_Print();
 		exit(0);
 	}
 
-	pobjs->pInstance = PyObject_CallObject(pobjs->pClass, NULL);
-	Py_DecRef(pName);
+	Py_DecRef(module);
+	Py_DecRef(dict);
+	Py_DecRef(type);
+
+	pobjs->apiInstance = PyObject_CallObject(type, NULL);
 
 	BindPlugins();
 }
 
 rasfly::Plugins::~Plugins() {
-	Py_DecRef(pobjs->pInstance);
-	Py_DecRef(pobjs->pDict);
-	Py_DecRef(pobjs->pClass);
-	Py_DecRef(pobjs->pModule);
 	for(auto const& func : pobjs->func_map) {
 		Py_DecRef(func.second);
 	}
+	Py_DecRef(pobjs->apiInstance);
 	Py_Finalize();
 }
 
 void rasfly::Plugins::BindPlugins() {
 	for(auto &func : function_implemented) {
-		PyObject * result = PyObject_CallMethod(pobjs->pInstance, "BindFunc", "(s)", func.first);
+		PyObject * result = PyObject_CallMethod(pobjs->apiInstance, "BindFunc", "(s)", func.first);
 
 		if(result != Py_None && PyCallable_Check(result)) {
 			func.second = true;
 			pobjs->func_map[func.first] = result;
 		}
 	}
-}
-
-void rasfly::Plugins::Execute(const char *function) {
-	PyObject_CallObject(pobjs->func_map[function], NULL);
-	PyErr_Print();
 }
 
 bool rasfly::Plugins::IsImplemented(const char *function) {

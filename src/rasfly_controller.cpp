@@ -3,9 +3,14 @@
 #include <Eigen/Dense>
 #include <Eigen/QR>
 
+//////////////////////////////////////////////////////////////////////////////////
+/// @struct DefaultController
+///
+/// @brief Implementation of basic flight controller
+//////////////////////////////////////////////////////////////////////////////////
 struct rasfly::Controller::DefaultController {
 	DefaultController(const PhysicalProperties &properties); 
-	Thrust_4M CalculateThrust(const State &current, const State &trim, const double total_thrust);
+	Thrust_4M CalculateThrust(const State &current, const State &trim);
 		
 	// Gain vectors
 	Eigen::Vector3d Kp;
@@ -20,6 +25,9 @@ struct rasfly::Controller::DefaultController {
 	double max_thrust;
 };
 
+//////////////////////////////////////////////////////////////////////////////////
+/// @brief Constructor requires a PhysicalProperties struct 
+//////////////////////////////////////////////////////////////////////////////////
 rasfly::Controller::DefaultController::DefaultController(const PhysicalProperties &properties) {
 	// Set gain vectors
 	Kp << properties.roll.kp, properties.pitch.kp, properties.yaw.kp;
@@ -41,27 +49,36 @@ rasfly::Controller::DefaultController::DefaultController(const PhysicalPropertie
 	ldlt.compute(torque_state);
 }
 
-rasfly::Thrust_4M rasfly::Controller::DefaultController::CalculateThrust(const State &current, const State &trim, const double total_thrust) {
+//////////////////////////////////////////////////////////////////////////////////
+/// @brief Function to calculate thrust of each motor
+///
+/// @param current - The current measured state returned by the imu and run through filter
+/// @param trim - The trim state as determined by the
+//////////////////////////////////////////////////////////////////////////////////
+rasfly::Thrust_4M rasfly::Controller::DefaultController::CalculateThrust(const State &current, const State &trim) {
 	// Compute state errors
 	Eigen::Vector3d delta_angle, delta_angle_rate, delta_accel;
 	delta_angle << current.rotation - trim.rotation;
 	delta_angle_rate << current.rotation_v - trim.rotation_v;
 	delta_accel << current.acceleration - trim.acceleration;
 	// Compute control terms
-	Eigen::Vector3d control_func = Kd.array() * delta_angle_rate.array() + Kp.array() + delta_angle.array();
+	Eigen::Vector3d control_func = Kd.array() * delta_angle_rate.array() + Kp.array() * delta_angle.array();
 	control_func = -moments * control_func;
 	control_func(0) /= motor_radius; control_func(1) /= motor_radius;
-	Eigen::Vector4d b(control_func(0), control_func(1), control_func(2), total_thrust * max_thrust);
+	Eigen::Vector4d b(control_func(0), control_func(1), control_func(2), trim.thrust * max_thrust);
 	// Solve for current thrusts as a percentage of max thrust
 	Eigen::Vector4d thrusts = ldlt.solve(b) / max_thrust;
 	rasfly::Thrust_4M thrust(thrusts(0), thrusts(1), thrusts(2), thrusts(3));
 	return thrust;
 }
 
+//////////////////////////////////////////////////////////////////////////////////
+/// @brief Constructor requires json config object
+//////////////////////////////////////////////////////////////////////////////////
 rasfly::Controller::Controller(nlohmann::json config) : properties(config) {
 	pimpl = std::make_unique<DefaultController>(properties);
-	calcThrust = [this](State &current, State &trim, const double total_thust) {
-		return pimpl->CalculateThrust(current, trim, total_thust);
+	calcThrust = [this](State &current, State &trim) {
+		return pimpl->CalculateThrust(current, trim);
 	};
 }
 
