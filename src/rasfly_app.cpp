@@ -29,26 +29,42 @@ rasfly::rasfly_app::rasfly_app() {
 //////////////////////////////////////////////////////////////////////////////////
 void rasfly::rasfly_app::BindCallbacks() {
 	if(plugins.IsImplemented("imu")) {
+		Log<Level::INFO>() << "Using IMU plugin";
+
 		_imu->getState = [this]() -> State {
 			return plugins.Execute<State>("imu");
 		};
 	}
 
 	if(plugins.IsImplemented("filter")) {
+		Log<Level::INFO>() << "Using filter plugin";
+
 		_filter->filterState = [this](State s) -> State {
 			return plugins.Execute<State>("filter", &s);
 		};
 	}
 
 	if(plugins.IsImplemented("inputs")) {
+		Log<Level::INFO>() << "Using inputs plugin";
+
 		_inputs->getPilotInput = [this]() -> State {
 			return plugins.Execute<State>("inputs");
 		};
 	}
 
 	if(plugins.IsImplemented("controller")) {
+		Log<Level::INFO>() << "Using controller plugin";
+
 		_controller->calcThrust = [this](State&, State&) -> Thrust_4M {
 			return plugins.Execute<Thrust_4M>("controller");
+		};
+	}
+
+	if(plugins.IsImplemented("motors")) {
+		Log<Level::INFO>() << "Using motors plugin";
+
+		_motors->setThrust = [this](Thrust_4M) -> void {
+			return plugins.Execute<void>("motors");
 		};
 	}
 
