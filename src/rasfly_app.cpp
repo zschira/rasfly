@@ -1,5 +1,6 @@
 #include "rasfly_app.hpp"
 #include "json.hpp"
+#include "log.hpp"
 #include <fstream>
 #include <iostream>
 
@@ -7,6 +8,7 @@
 /// @brief Default constructor
 //////////////////////////////////////////////////////////////////////////////////
 rasfly::rasfly_app::rasfly_app() {
+	LogFile::StartLogging();
 	nlohmann::json config;
 	std::ifstream config_file("rasfly.json");
 	config_file >> config;
@@ -52,8 +54,7 @@ void rasfly::rasfly_app::BindCallbacks() {
 
 	bool valid = _imu->getState && _inputs->getPilotInput && _controller->calcThrust && _motors->setThrust;
 	if(!valid) {
-		printf("Invalid configuration\n");
-		exit(1);
+		Log<Level::ERROR>() << "Invalid Configuration";
 	}
 }
 
