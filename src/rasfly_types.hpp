@@ -185,6 +185,9 @@ struct Thrust_4M {
 	double T2 = 0;
 	double T3 = 0;
 	double T4 = 0;
+
+	// Identifier
+	const char *name = "thrust";
 };
 
 }

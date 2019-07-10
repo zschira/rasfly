@@ -13,9 +13,11 @@ rasfly::Plugins::Plugins() : driver_name{"rasfly_py_api"}, class_name{"rasfly_ap
 	}
 {
 	pobjs->py_type_map = {
-	    {"vec3", &vec3_type},
-	    {"state", &state_type}
+		{"vec3", &vec3_type},
+		{"state", &state_type},
+		{"thrust", &thrust_type}
 	};
+
 	PyObject *module, *dict, *type;
 	// Create python api module
 	PyImport_AppendInittab("rasfly", &PyInit_rasfly);
