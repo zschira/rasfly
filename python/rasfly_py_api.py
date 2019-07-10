@@ -5,13 +5,14 @@ import plugins
 from plugins import *
 import inspect
 
+
 class rasfly_api(object):
 	"""docstring for rasfly_api"""
 	def __init__(self):
 		sys.path.append(os.getcwd() + "/python")
 		self.objs = []
-		self.keys = ['imu', 'filter', 'controller']
-		self.plugin_funcs = {'imu': None, 'filter': None, 'inputs': None, 'controller': None, 'motors': None}
+		self.keys = ['imu', 'filter', 'controller', 'esc', 'motors', 'inputs']
+		self.plugin_funcs = {'imu': None, 'filter': None, 'controller': None, 'esc': None, 'motors': None, 'inputs': None}
 		self.state = {'x': 0, 'y': 0, 'z': 0, 'qw': 0, 'qx': 0, 'qy': 0, 'qz': 0}
 		for mod_name in plugins.__all__:
 			mod = plugins.__dict__.get(mod_name)
@@ -28,7 +29,3 @@ class rasfly_api(object):
 
 	def BindFunc(self, name):
 		return self.plugin_funcs[name]
-
-	def GetState(self):
-		self.plugin_funcs['imu'](self.state)
-		return json.dumps(self.state)
