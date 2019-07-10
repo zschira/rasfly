@@ -11,11 +11,11 @@ namespace rasfly {
 //////////////////////////////////////////////////////////////////////////////////
 class IMU {
 public:
-	IMU() {}
-	~IMU() {}
-	std::function<State()> getState;
+    IMU() {}
+    ~IMU() {}
+    std::function<State()> getState;
 private:
-	State state;
+    State state;
 };
 }
 

@@ -13,13 +13,13 @@ namespace rasfly {
 //////////////////////////////////////////////////////////////////////////////////
 class Controller {
 public:
-	Controller(nlohmann::json config);
-	~Controller();
-	std::function<Thrust_4M(State&, State&)> calcThrust;
+    Controller(nlohmann::json config);
+    ~Controller();
+    std::function<Thrust_4M(State&, State&)> calcThrust;
 private:
-	struct DefaultController;
-	std::unique_ptr<DefaultController> pimpl;
-	PhysicalProperties properties;
+    struct DefaultController;
+    std::unique_ptr<DefaultController> pimpl;
+    PhysicalProperties properties;
 };
 }
 

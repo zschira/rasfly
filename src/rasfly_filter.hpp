@@ -11,7 +11,7 @@ namespace rasfly {
 //////////////////////////////////////////////////////////////////////////////////
 class Filter {
 public:
-	std::function<State(State)> filterState;
+    std::function<State(State)> filterState;
 };
 
 }

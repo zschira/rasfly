@@ -19,18 +19,18 @@
 /// @return value of component
 //////////////////////////////////////////////////////////////////////////////////
 static PyObject * Vec3_getattr(rasfly::Vec3 *vec, char *name) {
-	PyObject *ret;
-	if(strcmp(name, "x") == 0) {
-		ret = PyFloat_FromDouble(vec->x);
-	} else if(strcmp(name, "y") == 0) {
-		ret = PyFloat_FromDouble(vec->y);
-	} else if(strcmp(name, "z") == 0) {
-		ret = PyFloat_FromDouble(vec->z);
-	} else {
-		PyErr_Format(PyExc_AttributeError, "'%.50s' object has no attribute '%.400s'", Py_TYPE(vec)->tp_name, name);
-		return NULL;
-	}
-	return ret;
+    PyObject *ret;
+    if(strcmp(name, "x") == 0) {
+        ret = PyFloat_FromDouble(vec->x);
+    } else if(strcmp(name, "y") == 0) {
+        ret = PyFloat_FromDouble(vec->y);
+    } else if(strcmp(name, "z") == 0) {
+        ret = PyFloat_FromDouble(vec->z);
+    } else {
+        PyErr_Format(PyExc_AttributeError, "'%.50s' object has no attribute '%.400s'", Py_TYPE(vec)->tp_name, name);
+        return NULL;
+    }
+    return ret;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -42,17 +42,17 @@ static PyObject * Vec3_getattr(rasfly::Vec3 *vec, char *name) {
 /// @return 0 on success -1 on failure
 //////////////////////////////////////////////////////////////////////////////////
 static int Vec3_setattr(rasfly::Vec3 *vec, char *name, PyObject *val) {
-	if(strcmp(name, "x") == 0) {
-		vec->x = PyFloat_AsDouble(val);
-	} else if(strcmp(name, "y") == 0) {
-		vec->y = PyFloat_AsDouble(val);
-	} else if(strcmp(name, "z") == 0) {
-		vec->z = PyFloat_AsDouble(val);
-	} else {
-		PyErr_Format(PyExc_AttributeError, "'%.50s' object has no attribute '%.400s'", Py_TYPE(vec)->tp_name, name);
-		return -1;
-	}
-	return 0;
+    if(strcmp(name, "x") == 0) {
+        vec->x = PyFloat_AsDouble(val);
+    } else if(strcmp(name, "y") == 0) {
+        vec->y = PyFloat_AsDouble(val);
+    } else if(strcmp(name, "z") == 0) {
+        vec->z = PyFloat_AsDouble(val);
+    } else {
+        PyErr_Format(PyExc_AttributeError, "'%.50s' object has no attribute '%.400s'", Py_TYPE(vec)->tp_name, name);
+        return -1;
+    }
+    return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -64,13 +64,13 @@ static int Vec3_setattr(rasfly::Vec3 *vec, char *name, PyObject *val) {
 /// @return 0 on success -1 on failure
 //////////////////////////////////////////////////////////////////////////////////
 static int vec3_init(PyObject *self, PyObject *args, PyObject *kwds) {
-	double x,y,z;
-	rasfly::Vec3 *obj = (rasfly::Vec3 *) self;
-	PyArg_ParseTuple(args, "ddd", &x, &y, &z);
-	obj->x = x;
-	obj->y = y;
-	obj->z = z;
-	return 0;
+    double x,y,z;
+    rasfly::Vec3 *obj = (rasfly::Vec3 *) self;
+    PyArg_ParseTuple(args, "ddd", &x, &y, &z);
+    obj->x = x;
+    obj->y = y;
+    obj->z = z;
+    return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -82,52 +82,52 @@ static int vec3_init(PyObject *self, PyObject *args, PyObject *kwds) {
 /// @return 0 on success -1 on failure
 //////////////////////////////////////////////////////////////////////////////////
 PyObject *vec3_new(PyTypeObject *type, PyObject *args, PyObject *kwds) {
-	PyObject *obj = type->tp_alloc(type, 0);
-	return obj;
+    PyObject *obj = type->tp_alloc(type, 0);
+    return obj;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 /// @Struct Vec3 instance of PyTypeObject
 //////////////////////////////////////////////////////////////////////////////////
 static PyTypeObject vec3_type = {
-	PyVarObject_HEAD_INIT(NULL, 0)
-	"rasfly.vec3",
-	sizeof(rasfly::Vec3),
-	0,
-	0,										  /* tp_dealloc */
-	0,										  /* tp_print */
-	(getattrfunc)Vec3_getattr,				  /* tp_getattr */
-	(setattrfunc)Vec3_setattr,				  /* tp_setattr */
-	0,										  /* tp_reserved */
-	0,										  /* tp_repr */
-	0,										  /* tp_as_number */
-	0,										  /* tp_as_sequence */
-	0,										  /* tp_as_mapping */
-	0,										  /* tp_hash */
-	0,										  /* tp_call */
-	0,										  /* tp_str */
-	0,										  /* tp_getattro */
-	0,										  /* tp_setattro */
-	0,										  /* tp_as_buffer */
-	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */
-	0,										  /* tp_doc */
-	0,										  /* tp_traverse */
-	0,										  /* tp_clear */
-	0,										  /* tp_richcompare */
-	0,										  /* tp_weaklistoffset */
-	0,										  /* tp_iter */
-	0,										  /* tp_iternext */
-	0,										   /* tp_methods */
-	0,										  /* tp_members */
-	0,										   /* tp_getset */
-	0,											 /* tp_base */
-	0,										  /* tp_dict */
-	0,										  /* tp_descr_get */
-	0,										  /* tp_descr_set */
-	0,										  /* tp_dictoffset */
-	(initproc)vec3_init,								/* tp_init */
-	0,										  /* tp_alloc */
-	(newfunc)vec3_new,										  /* tp_new */
+    PyVarObject_HEAD_INIT(NULL, 0)
+    "rasfly.vec3",
+    sizeof(rasfly::Vec3),
+    0,
+    0,                                          /* tp_dealloc */
+    0,                                          /* tp_print */
+    (getattrfunc)Vec3_getattr,                  /* tp_getattr */
+    (setattrfunc)Vec3_setattr,                  /* tp_setattr */
+    0,                                          /* tp_reserved */
+    0,                                          /* tp_repr */
+    0,                                          /* tp_as_number */
+    0,                                          /* tp_as_sequence */
+    0,                                          /* tp_as_mapping */
+    0,                                          /* tp_hash */
+    0,                                          /* tp_call */
+    0,                                          /* tp_str */
+    0,                                          /* tp_getattro */
+    0,                                          /* tp_setattro */
+    0,                                          /* tp_as_buffer */
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */
+    0,                                          /* tp_doc */
+    0,                                          /* tp_traverse */
+    0,                                          /* tp_clear */
+    0,                                          /* tp_richcompare */
+    0,                                          /* tp_weaklistoffset */
+    0,                                          /* tp_iter */
+    0,                                          /* tp_iternext */
+    0,                                           /* tp_methods */
+    0,                                          /* tp_members */
+    0,                                           /* tp_getset */
+    0,                                             /* tp_base */
+    0,                                          /* tp_dict */
+    0,                                          /* tp_descr_get */
+    0,                                          /* tp_descr_set */
+    0,                                          /* tp_dictoffset */
+    (initproc)vec3_init,                                /* tp_init */
+    0,                                          /* tp_alloc */
+    (newfunc)vec3_new,                                          /* tp_new */
 };
 
 //================================================================================
@@ -137,25 +137,25 @@ static PyTypeObject vec3_type = {
 /// State Python type implementation
 //////////////////////////////////////////////////////////////////////////////////
 static PyObject *State_getattr(rasfly::State *state, char *name) {
-	PyObject *obj = NULL;
-	if(strcmp(name, "position") == 0) {
-		obj = (PyObject *) &state->position;
-	} else if(strcmp(name, "velocity") == 0) {
-		obj = (PyObject *) &state->velocity;
-	} else if(strcmp(name, "acceleration") == 0) {
-		obj = (PyObject *) &state->acceleration;
-	} else if(strcmp(name, "rotation") == 0) {
-		obj = (PyObject *) &state->rotation;
-	} else if(strcmp(name, "rotation_v") == 0) {
-		obj = (PyObject *) &state->rotation_v;
-	} else if(strcmp(name, "rotation_a") == 0) {
-		obj = (PyObject *) &state->rotation_a;
-	} else {
-		PyErr_Format(PyExc_AttributeError, "'%.50s' object has no attribute '%.400s'", Py_TYPE(state)->tp_name, name);
-		return NULL;
-	}
-	obj->ob_type = &vec3_type;
-	return obj;
+    PyObject *obj = NULL;
+    if(strcmp(name, "position") == 0) {
+        obj = (PyObject *) &state->position;
+    } else if(strcmp(name, "velocity") == 0) {
+        obj = (PyObject *) &state->velocity;
+    } else if(strcmp(name, "acceleration") == 0) {
+        obj = (PyObject *) &state->acceleration;
+    } else if(strcmp(name, "rotation") == 0) {
+        obj = (PyObject *) &state->rotation;
+    } else if(strcmp(name, "rotation_v") == 0) {
+        obj = (PyObject *) &state->rotation_v;
+    } else if(strcmp(name, "rotation_a") == 0) {
+        obj = (PyObject *) &state->rotation_a;
+    } else {
+        PyErr_Format(PyExc_AttributeError, "'%.50s' object has no attribute '%.400s'", Py_TYPE(state)->tp_name, name);
+        return NULL;
+    }
+    obj->ob_type = &vec3_type;
+    return obj;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -167,35 +167,35 @@ static PyObject *State_getattr(rasfly::State *state, char *name) {
 /// @return 0 on success or -1 on failure
 //////////////////////////////////////////////////////////////////////////////////
 static int State_setattr(rasfly::State *state, char *name, PyObject *vec) {
-	// Set thrust member
-	if(strcmp(name, "thrust") == 0) {
-		state->thrust = PyFloat_AsDouble(vec);
-		return 0;
-	}
+    // Set thrust member
+    if(strcmp(name, "thrust") == 0) {
+        state->thrust = PyFloat_AsDouble(vec);
+        return 0;
+    }
 
-	// Set Vector members
-	double x, y, z;
-	if(PyArg_ParseTuple(vec, "ddd", &x, &y, &z) == 0) {
-		PyErr_Print();
-		exit(1);
-	}
-	if(strcmp(name, "position") == 0) {
-		state->position = rasfly::Vec3(x, y, z);
-	} else if(strcmp(name, "velocity") == 0) {
-		state->velocity = rasfly::Vec3(x, y, z);
-	} else if(strcmp(name, "acceleration") == 0) {
-		state->acceleration = rasfly::Vec3(x, y, z);
-	} else if(strcmp(name, "rotation") == 0) {
-		state->rotation = rasfly::Vec3(x, y, z);
-	} else if(strcmp(name, "rotation_v") == 0) {
-		state->rotation_v = rasfly::Vec3(x, y, z);
-	} else if(strcmp(name, "rotation_a") == 0) {
-		state->rotation_a = rasfly::Vec3(x, y, z);
-	} else {
-		PyErr_Format(PyExc_AttributeError, "'%.50s' object has no attribute '%.400s'", Py_TYPE(state)->tp_name, name);
-		return -1;
-	}
-	return 0;
+    // Set Vector members
+    double x, y, z;
+    if(PyArg_ParseTuple(vec, "ddd", &x, &y, &z) == 0) {
+        PyErr_Print();
+        exit(1);
+    }
+    if(strcmp(name, "position") == 0) {
+        state->position = rasfly::Vec3(x, y, z);
+    } else if(strcmp(name, "velocity") == 0) {
+        state->velocity = rasfly::Vec3(x, y, z);
+    } else if(strcmp(name, "acceleration") == 0) {
+        state->acceleration = rasfly::Vec3(x, y, z);
+    } else if(strcmp(name, "rotation") == 0) {
+        state->rotation = rasfly::Vec3(x, y, z);
+    } else if(strcmp(name, "rotation_v") == 0) {
+        state->rotation_v = rasfly::Vec3(x, y, z);
+    } else if(strcmp(name, "rotation_a") == 0) {
+        state->rotation_a = rasfly::Vec3(x, y, z);
+    } else {
+        PyErr_Format(PyExc_AttributeError, "'%.50s' object has no attribute '%.400s'", Py_TYPE(state)->tp_name, name);
+        return -1;
+    }
+    return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -207,52 +207,52 @@ static int State_setattr(rasfly::State *state, char *name, PyObject *vec) {
 /// @return 0 on success -1 on failure
 //////////////////////////////////////////////////////////////////////////////////
 static PyObject *state_new(PyTypeObject *type, PyObject *args, PyObject *kwds) {
-	PyObject *obj = type->tp_alloc(type, 0);
-	return obj;
+    PyObject *obj = type->tp_alloc(type, 0);
+    return obj;
 } 
 
 //////////////////////////////////////////////////////////////////////////////////
 /// @Struct State instance of PyTypeObject
 //////////////////////////////////////////////////////////////////////////////////
 static PyTypeObject state_type = {
-	PyVarObject_HEAD_INIT(NULL, 0)
-	"rasfly.state",
-	sizeof(rasfly::State),
-	0,
-	0,										  /* tp_dealloc */
-	0,										  /* tp_print */
-	(getattrfunc)State_getattr,				 /* tp_getattr */
-	(setattrfunc)State_setattr,				 /* tp_setattr */
-	0,										  /* tp_reserved */
-	0,										  /* tp_repr */
-	0,										  /* tp_as_number */
-	0,										  /* tp_as_sequence */
-	0,										  /* tp_as_mapping */
-	0,										  /* tp_hash */
-	0,										  /* tp_call */
-	0,										  /* tp_str */
-	0,										  /* tp_getattro */
-	0,										  /* tp_setattro */
-	0,										  /* tp_as_buffer */
-	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */
-	0,										  /* tp_doc */
-	0,										  /* tp_traverse */
-	0,										  /* tp_clear */
-	0,										  /* tp_richcompare */
-	0,										  /* tp_weaklistoffset */
-	0,										  /* tp_iter */
-	0,										  /* tp_iternext */
-	0,										  /* tp_methods */
-	0,										  /* tp_members */
-	0,										  /* tp_getset */
-	0,										  /* tp_base */
-	0,										  /* tp_dict */
-	0,										  /* tp_descr_get */
-	0,										  /* tp_descr_set */
-	0,										  /* tp_dictoffset */
-	0,								  /* tp_init */
-	0,										  /* tp_alloc */
-	(newfunc)state_new,										  /* tp_new */
+    PyVarObject_HEAD_INIT(NULL, 0)
+    "rasfly.state",
+    sizeof(rasfly::State),
+    0,
+    0,                                          /* tp_dealloc */
+    0,                                          /* tp_print */
+    (getattrfunc)State_getattr,                 /* tp_getattr */
+    (setattrfunc)State_setattr,                 /* tp_setattr */
+    0,                                          /* tp_reserved */
+    0,                                          /* tp_repr */
+    0,                                          /* tp_as_number */
+    0,                                          /* tp_as_sequence */
+    0,                                          /* tp_as_mapping */
+    0,                                          /* tp_hash */
+    0,                                          /* tp_call */
+    0,                                          /* tp_str */
+    0,                                          /* tp_getattro */
+    0,                                          /* tp_setattro */
+    0,                                          /* tp_as_buffer */
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */
+    0,                                          /* tp_doc */
+    0,                                          /* tp_traverse */
+    0,                                          /* tp_clear */
+    0,                                          /* tp_richcompare */
+    0,                                          /* tp_weaklistoffset */
+    0,                                          /* tp_iter */
+    0,                                          /* tp_iternext */
+    0,                                          /* tp_methods */
+    0,                                          /* tp_members */
+    0,                                          /* tp_getset */
+    0,                                          /* tp_base */
+    0,                                          /* tp_dict */
+    0,                                          /* tp_descr_get */
+    0,                                          /* tp_descr_set */
+    0,                                          /* tp_dictoffset */
+    0,                                  /* tp_init */
+    0,                                          /* tp_alloc */
+    (newfunc)state_new,                                          /* tp_new */
 };
 
 //================================================================================
@@ -262,20 +262,20 @@ static PyTypeObject state_type = {
 /// Thrust Python type implementation
 //////////////////////////////////////////////////////////////////////////////////
 static PyObject *Thrust_getattr(rasfly::Thrust_4M *thrust, char *name) {
-	PyObject *ret;
-	if(strcmp(name, "T1") == 0) {
-		ret = PyFloat_FromDouble(thrust->T1);
-	} else if(strcmp(name, "T2") == 0) {
-		ret = PyFloat_FromDouble(thrust->T2);
-	} else if(strcmp(name, "T3") == 0) {
-		ret = PyFloat_FromDouble(thrust->T3);
-	} else if(strcmp(name, "T4") == 0) {
-		ret = PyFloat_FromDouble(thrust->T4);
-	} else {
-		PyErr_Format(PyExc_AttributeError, "'%.50s' object has no attribute '%.400s'", Py_TYPE(thrust)->tp_name, name);
-		return NULL;
-	}
-	return ret;
+    PyObject *ret;
+    if(strcmp(name, "T1") == 0) {
+        ret = PyFloat_FromDouble(thrust->T1);
+    } else if(strcmp(name, "T2") == 0) {
+        ret = PyFloat_FromDouble(thrust->T2);
+    } else if(strcmp(name, "T3") == 0) {
+        ret = PyFloat_FromDouble(thrust->T3);
+    } else if(strcmp(name, "T4") == 0) {
+        ret = PyFloat_FromDouble(thrust->T4);
+    } else {
+        PyErr_Format(PyExc_AttributeError, "'%.50s' object has no attribute '%.400s'", Py_TYPE(thrust)->tp_name, name);
+        return NULL;
+    }
+    return ret;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -287,19 +287,19 @@ static PyObject *Thrust_getattr(rasfly::Thrust_4M *thrust, char *name) {
 /// @return 0 on success or -1 on failure
 //////////////////////////////////////////////////////////////////////////////////
 static int Thrust_setattr(rasfly::Thrust_4M *thrust, char *name, PyObject *val) {
-	if(strcmp(name, "T1") == 0) {
-		thrust->T1 = PyFloat_AsDouble(val);
-	} else if(strcmp(name, "T2") == 0) {
-		thrust->T2 = PyFloat_AsDouble(val);
-	} else if(strcmp(name, "T3") == 0) {
-		thrust->T3 = PyFloat_AsDouble(val);
-	} else if(strcmp(name, "T4") == 0) {
-		thrust->T4 = PyFloat_AsDouble(val);
-	} else {
-		PyErr_Format(PyExc_AttributeError, "'%.50s' object has no attribute '%.400s'", Py_TYPE(val)->tp_name, name);
-		return -1;
-	}
-	return 0;
+    if(strcmp(name, "T1") == 0) {
+        thrust->T1 = PyFloat_AsDouble(val);
+    } else if(strcmp(name, "T2") == 0) {
+        thrust->T2 = PyFloat_AsDouble(val);
+    } else if(strcmp(name, "T3") == 0) {
+        thrust->T3 = PyFloat_AsDouble(val);
+    } else if(strcmp(name, "T4") == 0) {
+        thrust->T4 = PyFloat_AsDouble(val);
+    } else {
+        PyErr_Format(PyExc_AttributeError, "'%.50s' object has no attribute '%.400s'", Py_TYPE(val)->tp_name, name);
+        return -1;
+    }
+    return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -311,52 +311,52 @@ static int Thrust_setattr(rasfly::Thrust_4M *thrust, char *name, PyObject *val) 
 /// @return 0 on success -1 on failure
 //////////////////////////////////////////////////////////////////////////////////
 static PyObject *thrust_new(PyTypeObject *type, PyObject *args, PyObject *kwds) {
-	PyObject *obj = type->tp_alloc(type, 0);
-	return obj;
+    PyObject *obj = type->tp_alloc(type, 0);
+    return obj;
 } 
 
 //////////////////////////////////////////////////////////////////////////////////
 /// @Struct Thrust instance of PyTypeObject
 //////////////////////////////////////////////////////////////////////////////////
 static PyTypeObject thrust_type = {
-	PyVarObject_HEAD_INIT(NULL, 0)
-	"rasfly.state",
-	sizeof(rasfly::Thrust_4M),
-	0,
-	0,										  /* tp_dealloc */
-	0,										  /* tp_print */
-	(getattrfunc)Thrust_getattr,				 /* tp_getattr */
-	(setattrfunc)Thrust_setattr,				 /* tp_setattr */
-	0,										  /* tp_reserved */
-	0,										  /* tp_repr */
-	0,										  /* tp_as_number */
-	0,										  /* tp_as_sequence */
-	0,										  /* tp_as_mapping */
-	0,										  /* tp_hash */
-	0,										  /* tp_call */
-	0,										  /* tp_str */
-	0,										  /* tp_getattro */
-	0,										  /* tp_setattro */
-	0,										  /* tp_as_buffer */
-	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */
-	0,										  /* tp_doc */
-	0,										  /* tp_traverse */
-	0,										  /* tp_clear */
-	0,										  /* tp_richcompare */
-	0,										  /* tp_weaklistoffset */
-	0,										  /* tp_iter */
-	0,										  /* tp_iternext */
-	0,										  /* tp_methods */
-	0,										  /* tp_members */
-	0,										  /* tp_getset */
-	0,										  /* tp_base */
-	0,										  /* tp_dict */
-	0,										  /* tp_descr_get */
-	0,										  /* tp_descr_set */
-	0,										  /* tp_dictoffset */
-	0,								  /* tp_init */
-	0,										  /* tp_alloc */
-	(newfunc)thrust_new,										  /* tp_new */
+    PyVarObject_HEAD_INIT(NULL, 0)
+    "rasfly.state",
+    sizeof(rasfly::Thrust_4M),
+    0,
+    0,                                          /* tp_dealloc */
+    0,                                          /* tp_print */
+    (getattrfunc)Thrust_getattr,                 /* tp_getattr */
+    (setattrfunc)Thrust_setattr,                 /* tp_setattr */
+    0,                                          /* tp_reserved */
+    0,                                          /* tp_repr */
+    0,                                          /* tp_as_number */
+    0,                                          /* tp_as_sequence */
+    0,                                          /* tp_as_mapping */
+    0,                                          /* tp_hash */
+    0,                                          /* tp_call */
+    0,                                          /* tp_str */
+    0,                                          /* tp_getattro */
+    0,                                          /* tp_setattro */
+    0,                                          /* tp_as_buffer */
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */
+    0,                                          /* tp_doc */
+    0,                                          /* tp_traverse */
+    0,                                          /* tp_clear */
+    0,                                          /* tp_richcompare */
+    0,                                          /* tp_weaklistoffset */
+    0,                                          /* tp_iter */
+    0,                                          /* tp_iternext */
+    0,                                          /* tp_methods */
+    0,                                          /* tp_members */
+    0,                                          /* tp_getset */
+    0,                                          /* tp_base */
+    0,                                          /* tp_dict */
+    0,                                          /* tp_descr_get */
+    0,                                          /* tp_descr_set */
+    0,                                          /* tp_dictoffset */
+    0,                                  /* tp_init */
+    0,                                          /* tp_alloc */
+    (newfunc)thrust_new,                                          /* tp_new */
 };
 
 //================================================================================
@@ -367,64 +367,64 @@ static PyTypeObject thrust_type = {
 /// @brief Initialize pytypes
 //////////////////////////////////////////////////////////////////////////////////
 static int rasfly_exec(PyObject *mod) {
-	if(PyType_Ready(&vec3_type) < 0) {
-		return -1;
-	}
+    if(PyType_Ready(&vec3_type) < 0) {
+        return -1;
+    }
 
-	if(PyType_Ready(&state_type) < 0) {
-		return -1;
-	}
+    if(PyType_Ready(&state_type) < 0) {
+        return -1;
+    }
 
-	if(PyType_Ready(&thrust_type) < 0) {
-		return -1;
-	}
+    if(PyType_Ready(&thrust_type) < 0) {
+        return -1;
+    }
 
-	Py_INCREF(&vec3_type);
-	if(PyModule_AddObject(mod, "vec3", (PyObject *) &vec3_type) < 0) {
-		return -1;
-	}
+    Py_INCREF(&vec3_type);
+    if(PyModule_AddObject(mod, "vec3", (PyObject *) &vec3_type) < 0) {
+        return -1;
+    }
 
-	Py_INCREF(&state_type);
-	if(PyModule_AddObject(mod, "state", (PyObject *) &state_type) < 0) {
-		return -1;
-	}
+    Py_INCREF(&state_type);
+    if(PyModule_AddObject(mod, "state", (PyObject *) &state_type) < 0) {
+        return -1;
+    }
 
-	Py_INCREF(&thrust_type);
-	if(PyModule_AddObject(mod, "thrust", (PyObject *) &thrust_type) < 0) {
-		return -1;
-	}
+    Py_INCREF(&thrust_type);
+    if(PyModule_AddObject(mod, "thrust", (PyObject *) &thrust_type) < 0) {
+        return -1;
+    }
 
-	return 0;
+    return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 /// @array Module slot array
 //////////////////////////////////////////////////////////////////////////////////
 static PyModuleDef_Slot rasfly_slots[] = {
-	{Py_mod_exec, (void *) rasfly_exec},
-	{0, NULL},
+    {Py_mod_exec, (void *) rasfly_exec},
+    {0, NULL},
 };
 
 //////////////////////////////////////////////////////////////////////////////////
 /// @brief Create module
 //////////////////////////////////////////////////////////////////////////////////
 static PyModuleDef api_Module = {
-	PyModuleDef_HEAD_INIT,
-	"rasfly",
-	"rasfly api",
-	0,
-	NULL,
-	rasfly_slots,
-	NULL,
-	NULL,
-	NULL,
+    PyModuleDef_HEAD_INIT,
+    "rasfly",
+    "rasfly api",
+    0,
+    NULL,
+    rasfly_slots,
+    NULL,
+    NULL,
+    NULL,
 };
 
 //////////////////////////////////////////////////////////////////////////////////
 /// @brief Function to initialize module
 //////////////////////////////////////////////////////////////////////////////////
 PyMODINIT_FUNC PyInit_rasfly(void) {
-	return PyModuleDef_Init(&api_Module);
+    return PyModuleDef_Init(&api_Module);
 }
 
 #endif

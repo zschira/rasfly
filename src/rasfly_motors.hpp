@@ -11,7 +11,7 @@ namespace rasfly {
 //////////////////////////////////////////////////////////////////////////////////
 class Motors {
 public:
-	std::function<void(Thrust_4M)> setThrust;
+    std::function<void(Thrust_4M)> setThrust;
 };
 
 }
