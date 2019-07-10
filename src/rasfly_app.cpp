@@ -1,8 +1,8 @@
 #include "rasfly_app.hpp"
 #include "json.hpp"
 #include "log.hpp"
-#include <fstream>
-#include <iostream>
+#include "rasfly_util.hpp"
+#include <bitset>
 
 //////////////////////////////////////////////////////////////////////////////////
 /// @brief Default constructor
@@ -22,14 +22,14 @@ rasfly::rasfly_app::rasfly_app() {
 
 //////////////////////////////////////////////////////////////////////////////////
 /// @brief Check if there's a python implementation of each callback function. If
-///        a python implementation exists it will ALWAYS be used. If such an
-///        implemenation does not exist it will fall back on a c++ implementation.
-///        If there is also no c++ implementation then an error will be logged and
-///        the programe will stop 
+///		a python implementation exists it will ALWAYS be used. If such an
+///		implemenation does not exist it will fall back on a c++ implementation.
+///		If there is also no c++ implementation then an error will be logged and
+///		the programe will stop 
 //////////////////////////////////////////////////////////////////////////////////
 void rasfly::rasfly_app::BindCallbacks() {
 	if(plugins.IsImplemented("imu")) {
-		Log<Level::INFO>() << "Using IMU plugin";
+		Log<Level::INFO, true>() << "Using IMU plugin";
 
 		_imu->getState = [this]() -> State {
 			return plugins.Execute<State>("imu");
@@ -68,9 +68,9 @@ void rasfly::rasfly_app::BindCallbacks() {
 		};
 	}
 
-	bool valid = _imu->getState && _inputs->getPilotInput && _controller->calcThrust && _motors->setThrust;
-	if(!valid) {
-		Log<Level::ERROR>() << "Invalid Configuration";
+	auto valid = CreateBitSet<4>(_imu->getState, _inputs->getPilotInput, _controller->calcThrust, _motors->setThrust);
+	if(!valid.all()) {
+		Log<Level::ERROR>() << "Invalid Configuration: ";
 	}
 }
 
