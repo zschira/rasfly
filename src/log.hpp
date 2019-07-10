@@ -3,6 +3,9 @@
 
 #include <fstream>
 #include <iostream>
+#include <chrono>
+#include <map>
+
 enum class Level {
 	INFO,
 	WARNING,
@@ -21,12 +24,19 @@ public:
 	}
 
 	template<class T>
-	LogFile& operator<< (T &input) {
+	LogFile& operator<< (T &&input) {
 		file << input;
 		return *this;
 	}
 
+	void PrintTimeStamp() {
+		seconds elapsed_time = std::chrono::duration_cast<seconds>(std::chrono::system_clock::now() - start);
+		file << "(" << elapsed_time.count() << ") ";
+	}
+
+	static std::chrono::system_clock::time_point start;
 private:
+	using seconds = std::chrono::duration<double>;
 	static std::ofstream file;
 };
 
@@ -35,10 +45,13 @@ private:
 ///
 /// @brief Accepts and forwards streams to ofstream writing to a logfile 
 //////////////////////////////////////////////////////////////////////////////////
-template<Level level>
+template<Level level, bool printTime = false>
 class Log {
 public:
 	Log() {
+		if constexpr(printTime) {
+			log.PrintTimeStamp();
+		}
 		if constexpr(level == Level::INFO) {
 			log << "INFO: ";
 		} else if constexpr(level == Level::WARNING) {
@@ -70,7 +83,7 @@ public:
 	}
 
 	template<class T>
-	inline Log<level>& operator<< (T &input) {
+	inline Log<level, printTime>& operator<< (T &&input) {
 		if(write)
 			log << input;
 		return *this;
@@ -79,6 +92,15 @@ public:
 private:
 	LogFile log;
 	bool write = true;
+};
+
+class Error {
+public:
+	static void AddErrors(std::initializer_list<std::pair<unsigned long, char *>> list) {
+		
+	}
+private:
+	static std::map<unsigned long, char *> error_map;
 };
 
 #endif
