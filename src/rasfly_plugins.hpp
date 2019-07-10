@@ -16,14 +16,18 @@ public:
 	template<typename T, typename... Arguments>
 	T Execute(const char *function, Arguments*... parameters) {
 		PyObject *args = NULL;
-		T result; 
+		if constexpr(!std::is_same<T, void>::value) {
+			T result; 
+		}
 		if constexpr (sizeof...(parameters) > 0) {
 			args = PyTuple_Pack(sizeof...(Arguments), (...,test(parameters)));
 		}
 		PyObject *ret = PyObject_CallObject(pobjs->func_map[function], args);
 		Py_DecRef(args);
-		T type(*((T *) ret));
-		return type;
+		if constexpr(!std::is_same<T, void>::value) {
+			T type(*((T *) ret));
+			return type;
+		}
 	}
 
 	bool IsImplemented(const char *function);
