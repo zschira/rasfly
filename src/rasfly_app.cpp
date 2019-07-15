@@ -55,15 +55,15 @@ void rasfly::rasfly_app::BindCallbacks() {
     if(plugins.IsImplemented("controller")) {
         Log<Level::INFO>() << "Using controller plugin";
 
-        _controller->calcThrust = [this](State&, State&) -> Thrust_4M {
-            return plugins.Execute<Thrust_4M>("controller");
+        _controller->calcThrust = [this](State&, State&) -> Thrust {
+            return plugins.Execute<Thrust>("controller");
         };
     }
 
     if(plugins.IsImplemented("motors")) {
         Log<Level::INFO>() << "Using motors plugin";
 
-        _motors->setThrust = [this](Thrust_4M) -> void {
+        _motors->setThrust = [this](Thrust&) -> void {
             return plugins.Execute<void>("motors");
         };
     }

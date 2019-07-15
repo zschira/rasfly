@@ -261,7 +261,7 @@ static PyTypeObject state_type = {
 //////////////////////////////////////////////////////////////////////////////////
 /// Thrust Python type implementation
 //////////////////////////////////////////////////////////////////////////////////
-static PyObject *Thrust_getattr(rasfly::Thrust_4M *thrust, char *name) {
+static PyObject *Thrust_getattr(rasfly::Thrust *thrust, char *name) {
     PyObject *ret;
     if(strcmp(name, "T1") == 0) {
         ret = PyFloat_FromDouble(thrust->T1);
@@ -286,7 +286,7 @@ static PyObject *Thrust_getattr(rasfly::Thrust_4M *thrust, char *name) {
 /// @param vec - scalar thrust value or vec3
 /// @return 0 on success or -1 on failure
 //////////////////////////////////////////////////////////////////////////////////
-static int Thrust_setattr(rasfly::Thrust_4M *thrust, char *name, PyObject *val) {
+static int Thrust_setattr(rasfly::Thrust *thrust, char *name, PyObject *val) {
     if(strcmp(name, "T1") == 0) {
         thrust->T1 = PyFloat_AsDouble(val);
     } else if(strcmp(name, "T2") == 0) {
@@ -321,7 +321,7 @@ static PyObject *thrust_new(PyTypeObject *type, PyObject *args, PyObject *kwds) 
 static PyTypeObject thrust_type = {
     PyVarObject_HEAD_INIT(NULL, 0)
     "rasfly.state",
-    sizeof(rasfly::Thrust_4M),
+    sizeof(rasfly::Thrust),
     0,
     0,                                          /* tp_dealloc */
     0,                                          /* tp_print */

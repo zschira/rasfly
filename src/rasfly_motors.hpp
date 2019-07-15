@@ -2,6 +2,7 @@
 #define _RASFLY_MOTORS_H_
 
 #include <functional>
+#include <memory>
 #include "rasfly_types.hpp"
 
 namespace rasfly {
@@ -11,7 +12,11 @@ namespace rasfly {
 //////////////////////////////////////////////////////////////////////////////////
 class Motors {
 public:
-    std::function<void(Thrust_4M)> setThrust;
+    Motors();
+    std::function<void(Thrust&)> setThrust;
+private:
+    struct DefaultMotors;
+    std::unique_ptr<DefaultMotors> pImpl;
 };
 
 }

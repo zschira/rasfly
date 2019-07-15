@@ -5,6 +5,7 @@
 #include <string>
 #include <array>
 #include <Python.h>
+#include <vector>
 
 namespace rasfly {
 
@@ -167,20 +168,20 @@ struct PhysicalProperties {
 };
 
 //////////////////////////////////////////////////////////////////////////////////
-/// @struct Thrust_4M 
+/// @struct Thrust 
 ///
 /// @brief Struct to store calculated thrust values. Values are stored as a percentage
 ///        of the maximum thrust
 //////////////////////////////////////////////////////////////////////////////////
-struct Thrust_4M {
-    Thrust_4M(const double _T1, const double _T2, const double _T3, const double _T4) {
+struct Thrust {
+    Thrust(const double _T1, const double _T2, const double _T3, const double _T4) {
         T1 = _T1;
         T2 = _T2;
         T3 = _T3;
         T4 = _T4;
     }
-    Thrust_4M(const Thrust_4M& rhs) { T1 = rhs.T1; T2 = rhs.T2; T3 = rhs.T3; T4 = rhs.T4; }
-    Thrust_4M() {}
+    Thrust(const Thrust& rhs) { T1 = rhs.T1; T2 = rhs.T2; T3 = rhs.T3; T4 = rhs.T4; }
+    Thrust() {}
     double T1 = 0;
     double T2 = 0;
     double T3 = 0;

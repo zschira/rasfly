@@ -10,7 +10,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 struct rasfly::Controller::DefaultController {
     DefaultController(const PhysicalProperties &properties); 
-    Thrust_4M CalculateThrust(const State &current, const State &trim);
+    Thrust CalculateThrust(const State &current, const State &trim);
         
     // Gain vectors
     Eigen::Vector3d Kp;
@@ -55,7 +55,7 @@ rasfly::Controller::DefaultController::DefaultController(const PhysicalPropertie
 /// @param current - The current measured state returned by the imu and run through filter
 /// @param trim - The trim state as determined by the
 //////////////////////////////////////////////////////////////////////////////////
-rasfly::Thrust_4M rasfly::Controller::DefaultController::CalculateThrust(const State &current, const State &trim) {
+rasfly::Thrust rasfly::Controller::DefaultController::CalculateThrust(const State &current, const State &trim) {
     // Compute state errors
     Eigen::Vector3d delta_angle, delta_angle_rate, delta_accel;
     delta_angle << current.rotation - trim.rotation;
@@ -68,7 +68,7 @@ rasfly::Thrust_4M rasfly::Controller::DefaultController::CalculateThrust(const S
     Eigen::Vector4d b(control_func(0), control_func(1), control_func(2), trim.thrust * max_thrust);
     // Solve for current thrusts as a percentage of max thrust
     Eigen::Vector4d thrusts = ldlt.solve(b) / max_thrust;
-    rasfly::Thrust_4M thrust(thrusts(0), thrusts(1), thrusts(2), thrusts(3));
+    rasfly::Thrust thrust(thrusts(0), thrusts(1), thrusts(2), thrusts(3));
     return thrust;
 }
 
