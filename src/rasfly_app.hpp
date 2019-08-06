@@ -25,7 +25,7 @@ private:
     std::unique_ptr<IMU> _imu;                                // Pointer to imu class (gets state of copter)
     std::unique_ptr<Filter> _filter;                        // Pointer to filter class (apply kalman filter)
     std::unique_ptr<Controller> _controller;                // Pointer to controller class (Calculate thrust based on controls)
-    std::unique_ptr<Motors> _motors;                        // Pointer to motors class (send thrust controls to motors)
+    std::unique_ptr<ESCInterface> _motors;                        // Pointer to motors class (send thrust controls to motors)
     std::unique_ptr<Inputs> _inputs;                        // Pointer to inputs class (Get pilot inputs)
 };
 

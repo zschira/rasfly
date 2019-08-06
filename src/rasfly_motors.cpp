@@ -1,26 +1,23 @@
 #include "rasfly_motors.hpp"
 #include "log.hpp"
-#include <vector>
 
-struct rasfly::Motors::DefaultMotors {
-    DefaultMotors(unsigned _range, unsigned _rate, unsigned _min_pulse, unsigned _max_pulse);
-    void SetThrust(Thrust &thrust);
-    std::vector<unsigned> gpio_pins;
-    unsigned min_throttle, max_throttle;
-    unsigned throttle_diff;
-    unsigned min_pulse, max_pulse;
-    unsigned range;
-    unsigned rate;
-};
+std::unique_ptr<rasfly::ESCInterface> rasfly::ESCInterface::factory(nlohmann::json config) {
+        if(config["ESC_PROTOCOL"] == "PWM") {
+            return std::make_unique<AnalogSignal>(4000, 50, 1, 2);
+        } else if (config["ESC_PROTOCOL"] == "ONE_SHOT_125") {
+            Log<Level::ERROR>() << "ONE_SHOT_125 not implemented";
+        } else if (config["ESC_PROTOCOL"] == "ONE_SHOT_42") {
+            Log<Level::ERROR>() << "ONE_SHOT_42 not implemented";
+        } else if (config["ESC_PROTOCOL"] == "MULTISHOT") {
+            Log<Level::ERROR>() << "MULTISHOT not implemented";
+        } else if (config["ESC_PROTOCOL"] == "DSHOT") {
+            Log<Level::ERROR>() << "DSHOT not implemented";
+        } else {
+            Log<Level::ERROR>() << "INVALID ESC_PROTOCOL: " << config["ESC_PROTOCOL"];
+        }
+}
 
-rasfly::Motors::DefaultMotors::DefaultMotors(unsigned _range, unsigned _rate, unsigned _min_pulse, unsigned _max_pulse) {
-    range = _range;
-    rate = _rate;
-    min_pulse = _min_pulse;
-    max_pulse = _max_pulse;
-
-    min_throttle = min_pulse * 1000/rate * range;
-
+rasfly::AnalogSignal::AnalogSignal(unsigned range, unsigned rate, unsigned min_pulse, unsigned max_pulse) {
     // Initialize pigpio library
     if(gpioInitialize() < 0) {
         Log<Level::ERROR>() << "Can't initialize pigpio";
@@ -37,18 +34,15 @@ rasfly::Motors::DefaultMotors::DefaultMotors(unsigned _range, unsigned _rate, un
             Log<Level::ERROR>() << "Can't set PWM frequency on pin: " << pin;
         }
     }
+
+    min_input = min_pulse * 1000/rate * range;
+    auto max_input = max_pulse * 1000/rate * range;
+    input_diff = max_input - min_input;
 }
 
-void rasfly::Motors::DefaultMotors::SetThrust(Thrust &thrusts) {
-    gpioPWM(gpio_pins[0], min_throttle + range*thrusts.T1);
-    gpioPWM(gpio_pins[1], min_throttle + range*thrusts.T2);
-    gpioPWM(gpio_pins[2], min_throttle + range*thrusts.T3);
-    gpioPWM(gpio_pins[3], min_throttle + range*thrusts.T4);
-}
-
-rasfly::Motors::Motors() {
-    pImpl = std::make_unique<DefaultMotors>();
-    setThrust = [this](Thrust &thrusts) {
-        return pImpl->SetThrust(thrusts);
-    };
+void rasfly::AnalogSignal::setThrust(Thrust &thrust) {
+    gpioPWM(gpio_pins[0], min_input + thrust.T1*input_diff);
+    gpioPWM(gpio_pins[1], min_input + thrust.T2*input_diff);
+    gpioPWM(gpio_pins[2], min_input + thrust.T3*input_diff);
+    gpioPWM(gpio_pins[3], min_input + thrust.T4*input_diff);
 }

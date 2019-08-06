@@ -9,7 +9,6 @@ rasfly::Plugins::Plugins() : driver_name{"rasfly_py_api"}, class_name{"rasfly_ap
         {"filter", false}, 
         {"inputs", false}, 
         {"controller", false}, 
-        {"motors", false} 
     }
 {
     pobjs->py_type_map = {

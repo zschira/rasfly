@@ -15,7 +15,7 @@ rasfly::rasfly_app::rasfly_app() {
     _imu = std::make_unique<IMU>();
     _filter = std::make_unique<Filter>();
     _controller = std::make_unique<Controller>(config);
-    _motors = std::make_unique<Motors>();
+    _motors = ESCInterface::factory(config);
     _inputs = std::make_unique<Inputs>();
     BindCallbacks();
 }
@@ -60,15 +60,7 @@ void rasfly::rasfly_app::BindCallbacks() {
         };
     }
 
-    if(plugins.IsImplemented("motors")) {
-        Log<Level::INFO>() << "Using motors plugin";
-
-        _motors->setThrust = [this](Thrust&) -> void {
-            return plugins.Execute<void>("motors");
-        };
-    }
-
-    auto valid = CreateBitSet<4>(_imu->getState, _inputs->getPilotInput, _controller->calcThrust, _motors->setThrust);
+    auto valid = CreateBitSet<3>(_imu->getState, _inputs->getPilotInput, _controller->calcThrust);
     if(!valid.all()) {
         Log<Level::ERROR>() << "Invalid Configuration: ";
     }
@@ -78,9 +70,9 @@ void rasfly::rasfly_app::BindCallbacks() {
 /// @brief Main loop simply calls each callback function
 //////////////////////////////////////////////////////////////////////////////////
 void rasfly::rasfly_app::run() {
-    auto curr = _imu->getState();
-    auto filtered = _filter->filterState(curr);
+    auto measured_state = _imu->getState();
+    auto filtered_state = _filter->filterState(measured_state);
     auto pilot_input = _inputs->getPilotInput();
-    auto thrust = _controller->calcThrust(filtered, pilot_input);
+    auto thrust = _controller->calcThrust(filtered_state, pilot_input);
     _motors->setThrust(thrust);
 }
