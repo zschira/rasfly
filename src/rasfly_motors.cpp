@@ -15,6 +15,7 @@ std::unique_ptr<rasfly::ESCInterface> rasfly::ESCInterface::factory(nlohmann::js
         } else {
             Log<Level::ERROR>() << "INVALID ESC_PROTOCOL: " << config["ESC_PROTOCOL"];
         }
+        return nullptr;
 }
 
 rasfly::AnalogSignal::AnalogSignal(unsigned range, unsigned rate, unsigned min_pulse, unsigned max_pulse) {

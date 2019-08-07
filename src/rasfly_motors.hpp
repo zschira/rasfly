@@ -30,6 +30,7 @@ protected:
 };
 
 class AnalogSignal : public ESCInterface {
+public:
     AnalogSignal(unsigned range, unsigned rate, unsigned min_pulse, unsigned max_pulse);
     void setThrust(Thrust &thrust) override;
 private:
